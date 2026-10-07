@@ -1,0 +1,5 @@
+{"type": "spectrum", "name": "Pierścień", "blend_mode": "additive",
+ "params": {"mode": "circle", "color": "#7C5CFF", "use_gradient": true, "color2": "#FF4FD8",
+            "bar_gap": 0.35, "inner_radius": 0.5, "bands": 96, "f_min": 30.0, "f_max": 12000.0,
+            "log_scale": true, "smoothing": 0.7, "gain": 1.3, "floor": 0.35, "glow": 0.9,
+            "glow_radius": 16.0}}

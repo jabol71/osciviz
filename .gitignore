@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Budowanie
+build/
+dist/
+site/
+
+# Profilowanie i pliki robocze
+*.prof
+profile.out
+*.osv.tmp
+.osv-*.tmp
+
+# macOS
+.DS_Store

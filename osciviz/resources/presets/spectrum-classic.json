@@ -1,0 +1,5 @@
+{"type": "spectrum", "name": "Klasyczne słupki", "blend_mode": "normal",
+ "params": {"mode": "bars", "color": "#22D3EE", "use_gradient": true, "color2": "#7C5CFF",
+            "bar_gap": 0.25, "inner_radius": 0.45, "bands": 48, "f_min": 30.0, "f_max": 14000.0,
+            "log_scale": true, "smoothing": 0.65, "gain": 1.2, "floor": 0.35, "glow": 0.3,
+            "glow_radius": 10.0}}

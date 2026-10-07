@@ -1,0 +1,35 @@
+site_name: OsciViz
+site_description: Programowy oscyloskop i edytor wizualizacji audio
+repo_url: https://github.com/jabol71/osciviz
+docs_dir: docs
+theme:
+  name: material
+  language: pl
+  palette:
+    scheme: slate
+    primary: deep purple
+    accent: cyan
+nav:
+  - Start: index.md
+  - Instrukcja obsługi:
+      - Pierwsze kroki: user-guide/getting-started.md
+      - Interfejs: user-guide/interface.md
+      - Warstwy: user-guide/layers.md
+      - Przechwytywanie z FL Studio: user-guide/live-capture.md
+      - Projekty i eksport: user-guide/export.md
+      - Skróty klawiszowe: user-guide/shortcuts.md
+  - Dokumentacja techniczna:
+      - Architektura: technical/architecture.md
+      - Audio: technical/audio.md
+      - Analiza sygnału: technical/analysis.md
+      - Scena i transformacje: technical/scene.md
+      - Cząsteczki: technical/particles.md
+      - Renderowanie: technical/render.md
+      - GUI, motywy i tłumaczenia: technical/gui.md
+      - Zapis i eksport: technical/io.md
+      - Budowanie i testy: technical/build.md
+markdown_extensions:
+  - tables
+  - admonition
+  - toc:
+      permalink: true

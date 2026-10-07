@@ -1,0 +1,5 @@
+{"type": "particles", "name": "Pył", "blend_mode": "additive",
+ "params": {"method": "edges", "invert": false, "threshold": 0.4, "count": 40000, "size": 1.6,
+            "brightness": 1.3, "bass_lo": 20.0, "bass_hi": 160.0, "gate": 0.45, "push_mode": "noise",
+            "mid_brightness": true, "high_size": true, "strength": 14.0, "stiffness": 25.0,
+            "damping": 4.0, "glow": 0.8, "glow_radius": 12.0}}

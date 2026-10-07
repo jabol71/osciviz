@@ -1,0 +1,4 @@
+{"type": "waveform", "name": "Minimal", "blend_mode": "normal",
+ "params": {"color": "#FFFFFF", "use_gradient": false, "color2": "#FFFFFF", "thickness": 2.0,
+            "copies": 1, "copy_offset": 0.0, "window_ms": 60.0, "gain": 1.2, "stabilize": false,
+            "glow": 0.0, "glow_radius": 8.0, "channel": "mono"}}

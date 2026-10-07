@@ -1,0 +1,3 @@
+{"type": "xy", "name": "Goniometr", "blend_mode": "additive",
+ "params": {"color": "#FFB020", "thickness": 1.5, "persistence": 0.8, "trail_ms": 40.0,
+            "gain": 1.0, "rotate45": true, "glow": 0.8, "glow_radius": 10.0}}

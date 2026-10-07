@@ -1,0 +1,4 @@
+{"type": "waveform", "name": "CRT zielony", "blend_mode": "additive",
+ "params": {"color": "#39FF6A", "use_gradient": false, "color2": "#39FF6A", "thickness": 2.5,
+            "copies": 1, "copy_offset": 0.0, "window_ms": 20.0, "gain": 1.6, "stabilize": true,
+            "glow": 1.8, "glow_radius": 16.0, "channel": "mono"}}

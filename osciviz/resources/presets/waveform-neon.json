@@ -1,0 +1,4 @@
+{"type": "waveform", "name": "Neon", "blend_mode": "additive",
+ "params": {"color": "#FF2BD6", "use_gradient": true, "color2": "#22D3EE", "thickness": 5.0,
+            "copies": 3, "copy_offset": 0.06, "window_ms": 30.0, "gain": 1.8, "stabilize": true,
+            "glow": 1.4, "glow_radius": 22.0, "channel": "mono"}}

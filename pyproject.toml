@@ -1,0 +1,44 @@
+[project]
+name = "osciviz"
+version = "1.0.0"
+description = "Programowy oscyloskop i edytor wizualizacji audio (PySide6 + moderngl)"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "PySide6>=6.6",
+    "moderngl>=5.10",
+    "numpy>=1.26",
+    "soundfile>=0.12",
+    "sounddevice>=0.4.6",
+    "opencv-python>=4.8",
+    "Pillow>=10.0",
+    "imageio-ffmpeg>=0.4.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5", "pyinstaller>=6.3", "mkdocs-material>=9.5"]
+
+[project.gui-scripts]
+osciviz = "osciviz.app:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["osciviz*"]
+
+[tool.setuptools.package-data]
+osciviz = ["render/shaders/*", "gui/themes/*", "i18n/*.qm", "resources/presets/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 140
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "N", "PL"]
+ignore = ["N815", "PLR0917", "PLR6301", "PLC2701", "PLR0904", "PLR0914", "PLR1702", "PLW1514", "PLR6201", "PLW0108", "PLC1901", "PLR0911", "PLR0912", "PLR0913", "PLR0915", "PLR2004", "PLW0603", "N802", "B023", "PLC0415"]

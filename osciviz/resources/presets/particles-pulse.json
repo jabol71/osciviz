@@ -1,0 +1,5 @@
+{"type": "particles", "name": "Puls basu", "blend_mode": "additive",
+ "params": {"method": "brightness", "invert": false, "threshold": 0.5, "count": 30000, "size": 2.2,
+            "brightness": 1.1, "bass_lo": 20.0, "bass_hi": 140.0, "gate": 0.5, "push_mode": "radial",
+            "mid_brightness": true, "high_size": false, "strength": 9.0, "stiffness": 45.0,
+            "damping": 7.0, "glow": 0.5, "glow_radius": 10.0}}

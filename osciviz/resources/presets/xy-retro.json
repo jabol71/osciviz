@@ -1,0 +1,3 @@
+{"type": "xy", "name": "Retro XY", "blend_mode": "additive",
+ "params": {"color": "#3DFFA2", "thickness": 1.8, "persistence": 0.92, "trail_ms": 30.0,
+            "gain": 1.3, "rotate45": false, "glow": 1.2, "glow_radius": 12.0}}

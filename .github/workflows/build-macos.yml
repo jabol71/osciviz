@@ -1,0 +1,39 @@
+name: Build macOS app
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - runner: macos-14   # Apple Silicon
+            arch: arm64
+          - runner: macos-15-intel   # Intel
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Zależności
+        run: pip install -r requirements.txt pyinstaller
+      - name: PyInstaller
+        run: pyinstaller packaging/osciviz.spec --noconfirm
+      - name: Spakuj
+        run: |
+          cd dist
+          ditto -c -k --keepParent OsciViz.app OsciViz-macOS-${{ matrix.arch }}.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OsciViz-macOS-${{ matrix.arch }}
+          path: dist/OsciViz-macOS-${{ matrix.arch }}.zip
+      - name: Dołącz do wydania
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/OsciViz-macOS-${{ matrix.arch }}.zip
