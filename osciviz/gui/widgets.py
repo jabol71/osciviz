@@ -159,7 +159,7 @@ class ColorButton(QPushButton):
         fg = "#000000" if QColor(self._color).lightnessF() > 0.6 else "#FFFFFF"
         self.setStyleSheet(
             f"QPushButton {{ background: {self._color}; color: {fg}; border-radius: 7px;"
-            f" border: 1px solid rgba(255,255,255,0.18); font-family: 'SF Mono','Menlo',monospace;"
+            f" border: 1px solid rgba(255,255,255,0.18); font-family: 'SF Mono','Menlo','Cascadia Mono','Consolas',monospace;"
             f" font-size: 12px; }}"
         )
 

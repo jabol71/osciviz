@@ -57,6 +57,7 @@ from osciviz.gui.canvas_widget import CanvasWidget
 from osciviz.gui.export_dialog import ExportDialog
 from osciviz.gui.icons import LAYER_ICONS, icon
 from osciviz.gui.inspector import Inspector
+from osciviz.gui.keys import IS_MAC, IS_WINDOWS, modifier_name, native, with_keys
 from osciviz.gui.layer_panel import LayerPanel
 from osciviz.gui.settings_dialog import SettingsDialog
 from osciviz.gui.source_panel import SourcePanel
@@ -348,7 +349,7 @@ class MainWindow(QMainWindow):
         a("export_mp4", self.export_video, "Ctrl+E", "export")
         a("export_png", self.export_png, "Ctrl+Shift+S", "camera")
         a("demo", self.load_demo)
-        a("quit", self.close, QKeySequence.Quit)
+        a("quit", self.close, QKeySequence.Quit if IS_MAC else "Ctrl+Q")
         undo = self.undo.createUndoAction(self)
         undo.setShortcut(QKeySequence.Undo)
         undo.setIcon(icon("undo", theme.tokens["text"]))
@@ -375,7 +376,7 @@ class MainWindow(QMainWindow):
         a("zoom_out", lambda: self.canvas.zoom_by(0.8), "Ctrl+-")
         a("play", self.toggle_play, "Space", "play")
         a("rewind", self.rewind, "Home", "skip-back")
-        a("settings", self.open_settings, QKeySequence.Preferences, "settings")
+        a("settings", self.open_settings, QKeySequence.Preferences if IS_MAC else "Ctrl+,", "settings")
         a("guide", lambda: QDesktopServices.openUrl(QUrl(DOCS_URL)), QKeySequence.HelpContents, "info")
         a("shortcuts", self.show_shortcuts)
         a("about", self.show_about)
@@ -491,15 +492,15 @@ class MainWindow(QMainWindow):
         self.menu_lang.setTitle(self.tr("Language"))
         self.menu_play.setTitle(self.tr("Playback"))
         self.menu_help.setTitle(self.tr("Help"))
-        self.undo_btn.setToolTip(self.tr("Undo (⌘Z)"))
-        self.redo_btn.setToolTip(self.tr("Redo (⇧⌘Z)"))
+        self.undo_btn.setToolTip(with_keys(self.tr("Undo"), "Ctrl+Z"))
+        self.redo_btn.setToolTip(with_keys(self.tr("Redo"), "Ctrl+Shift+Z"))
         self.grid_btn.setToolTip(self.tr("Grid (G)"))
         self.snap_btn.setToolTip(self.tr("Snap to grid"))
-        self.fit_btn.setToolTip(self.tr("Fit canvas (⌘0)"))
-        self.png_btn.setToolTip(self.tr("Snapshot PNG (⇧⌘S)"))
+        self.fit_btn.setToolTip(with_keys(self.tr("Fit canvas"), "Ctrl+0"))
+        self.png_btn.setToolTip(with_keys(self.tr("Snapshot PNG"), "Ctrl+Shift+S"))
         self.settings_btn.setToolTip(self.tr("Settings"))
         self.export_btn.setText(self.tr("Export"))
-        self.export_btn.setToolTip(self.tr("Export video (⌘E)"))
+        self.export_btn.setToolTip(with_keys(self.tr("Export video"), "Ctrl+E"))
         self.statusBar().showMessage(self.tr("Ready"), 1500)
         self.source_panel.retranslate()
         self.layer_panel.retranslate()
@@ -630,7 +631,7 @@ class MainWindow(QMainWindow):
     def toggle_play(self) -> None:
         if self.live is not None or self.source is None:
             if self.source is None and self.live is None:
-                self.toast.show_message(self.tr("Open an audio file first (⌘I)"))
+                self.toast.show_message(with_keys(self.tr("Open an audio file first"), "Ctrl+I"))
             return
         self.player.toggle()
         self.timeline.set_playing(self.player.is_playing)
@@ -690,9 +691,7 @@ class MainWindow(QMainWindow):
             self.source_panel.set_listening(False)
             QMessageBox.warning(
                 self, self.tr("Cannot start live input"),
-                self.tr("Opening the input device failed:\n%1\n\nOn macOS, allow microphone access for "
-                        "OsciViz in System Settings → Privacy & Security → Microphone.")
-                .replace("%1", str(exc)))
+                self.tr("Opening the input device failed:\n%1").replace("%1", str(exc)) + "\n\n" + self._mic_hint())
             return
         self.live_t0 = time.perf_counter()
         self.sim.reset()
@@ -1039,21 +1038,33 @@ class MainWindow(QMainWindow):
         dlg = ExportDialog(self.scene, source, default, self.default_image, self)
         dlg.exec()
 
+    def _mic_hint(self) -> str:
+        """Wskazówka o uprawnieniu do mikrofonu, inna dla każdego systemu."""
+        if IS_MAC:
+            return self.tr("On macOS, allow microphone access for OsciViz in "
+                           "System Settings → Privacy & Security → Microphone.")
+        if IS_WINDOWS:
+            return self.tr("On Windows, check Settings → Privacy & security → Microphone and turn on "
+                           "“Let desktop apps access your microphone”.")
+        return self.tr("Check that the device is connected and not used by another program.")
+
     # ======================================================================
     # Pomoc
     # ======================================================================
     def show_shortcuts(self) -> None:
         rows = [
-            ("Space", self.tr("Play / pause")), ("⌘Z / ⇧⌘Z", self.tr("Undo / redo")),
-            ("⌘S · ⌘O · ⌘N", self.tr("Save · open · new")), ("⌘E", self.tr("Export MP4")),
-            ("⇧⌘S", self.tr("Snapshot PNG")), ("⌘D", self.tr("Duplicate")), ("⌫", self.tr("Delete")),
-            ("← ↑ → ↓", self.tr("Move (Shift: large step)")), ("R / ⇧R", self.tr("Rotate +5° / −5°")),
+            ("Space", self.tr("Play / pause")),
+            (f"{native('Ctrl+Z')} / {native('Ctrl+Shift+Z')}", self.tr("Undo / redo")),
+            (" · ".join(native(k) for k in ("Ctrl+S", "Ctrl+O", "Ctrl+N")), self.tr("Save · open · new")),
+            (native("Ctrl+E"), self.tr("Export MP4")), (native("Ctrl+Shift+S"), self.tr("Snapshot PNG")),
+            (native("Ctrl+D"), self.tr("Duplicate")), (f"{native('Del')} / {native('Backspace')}", self.tr("Delete")),
+            ("← ↑ → ↓", self.tr("Move (Shift: large step)")), (f"R / {native('Shift+R')}", self.tr("Rotate +5° / −5°")),
             ("+ / −", self.tr("Scale")), ("G", self.tr("Toggle grid")), ("Tab", self.tr("Next layer")),
             (self.tr("Scroll / pinch"), self.tr("Zoom view")),
             (self.tr("Space + drag / middle button"), self.tr("Pan view")),
             (self.tr("Shift + handle"), self.tr("Keep proportions")),
             (self.tr("Alt + handle"), self.tr("Scale from center")),
-            (self.tr("⌘ + rotate handle"), self.tr("Snap to 15°")),
+            (self.tr("%1 + rotate handle").replace("%1", modifier_name()), self.tr("Snap to 15°")),
         ]
         html = "<table cellspacing='6'>" + "".join(
             f"<tr><td><b>{k}</b></td><td style='padding-left:18px'>{v}</td></tr>" for k, v in rows) + "</table>"

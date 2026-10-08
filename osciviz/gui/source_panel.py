@@ -13,6 +13,7 @@ from PySide6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QPushButton, QStac
 from osciviz.core.audio_source import list_input_devices
 from osciviz.core.sd import import_error
 from osciviz.gui.icons import icon
+from osciviz.gui.keys import with_keys
 from osciviz.gui.theme import theme
 from osciviz.gui.widgets import Segmented, label, tool_button
 
@@ -116,7 +117,7 @@ class SourcePanel(QFrame):
         self.live_pill.setText(self.tr("LIVE"))
         self.mode.set_text("file", self.tr("File"))
         self.mode.set_text("live", self.tr("Live input"))
-        self.open_btn.setToolTip(self.tr("Open audio file… (⌘I)"))
+        self.open_btn.setToolTip(with_keys(self.tr("Open audio file…"), "Ctrl+I"))
         self.refresh_btn.setToolTip(self.tr("Refresh device list"))
         self._update_listen_text()
         self.rec_btn.setText(self.tr("● REC"))

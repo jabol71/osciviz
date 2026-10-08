@@ -163,7 +163,7 @@ class CanvasWidget(QOpenGLWidget):
 
     def paintGL(self) -> None:  # noqa: N802
         dpr = self.devicePixelRatioF()
-        size = (max(1, int(self.width() * dpr)), max(1, int(self.height() * dpr)))
+        size = (max(1, round(self.width() * dpr)), max(1, round(self.height() * dpr)))
         bg = theme.color("canvas")
         painter = QPainter(self)
         if self.ctx is not None:
