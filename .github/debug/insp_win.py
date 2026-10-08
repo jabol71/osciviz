@@ -17,6 +17,9 @@ def note(msg):
     print("::notice::" + msg.replace("\n", " | "), flush=True)
 import PySide6
 note(f"qt={PySide6.__version__} style={app.style().name()} platform={app.platformName()} scheme={app.styleHints().colorScheme()}")
+from PySide6.QtWidgets import QMessageBox
+for _n in ("warning", "information", "critical", "question"):
+    setattr(QMessageBox, _n, staticmethod(lambda *a, **k: note(f"msgbox {a[1:3]}") or QMessageBox.Ok))
 from osciviz.gui.main_window import MainWindow
 w = MainWindow(app); w.resize(1400, 900); w.show(); w.load_demo()
 def shot():
@@ -35,6 +38,9 @@ def shot():
         # rozkład jasności pikseli pola — czy cokolwiek jest narysowane
         vals = sorted({img.pixelColor(x, y).lightness() for x in range(0, img.width(), 2) for y in range(0, img.height(), 2)})
         note(f"pixels lightness distinct={len(vals)} min={vals[0]} max={vals[-1]}")
-    app.quit()
+    sys.stdout.flush()
+    os._exit(0)
+note('before exec')
 QTimer.singleShot(800, shot)
+QTimer.singleShot(60000, lambda: (note('timeout'), os._exit(3)))
 app.exec()

@@ -12,8 +12,11 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - name: Domyślnie
+        timeout-minutes: 3
         env: {PYTHONPATH: ".", SEL: "1"}
         run: python .github/debug/insp_win.py
       - name: Bez setColorScheme
+        if: always()
+        timeout-minutes: 3
         env: {PYTHONPATH: ".", SEL: "1", NOSCHEME: "1"}
         run: python .github/debug/insp_win.py
