@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   push:
     tags: ["v*"]
+  # Zmiany w paczce sprawdzamy już w pull requeście.
+  pull_request:
+    paths: ["packaging/**", "requirements.txt", ".github/workflows/build-windows.yml"]
 
 jobs:
   build:
