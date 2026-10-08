@@ -19,6 +19,7 @@ mkdocs serve               # podgląd dokumentacji na http://127.0.0.1:8000
 | `test_analysis.py` | sinus 60 Hz → maksimum w basie, 5 kHz → w wysokich; skala amplitudy; obwiednia |
 | `test_ring_buffer.py` | zawijanie, kolejność, dopełnianie zerami, blok większy niż bufor |
 | `test_devices.py` | Windows: tylko urządzenia WASAPI; wykrywanie BlackHole i VB-Cable |
+| `test_widgets.py` | pole liczbowe z motywem ma edytowalne pole tekstowe (błąd Qt 6.12.0) |
 | `test_loopback.py` | loopback: dwa pierwsze kanały z 5.1, mono → stereo, cisza po przerwie |
 | `test_image_to_points.py` | liczba punktów, zakres współrzędnych, kolory z obrazu, wszystkie metody |
 | `test_particles.py` | bez basu cząsteczki wracają do spoczynku; stabilność przy dużym kroku |
@@ -78,6 +79,14 @@ Kod jest wspólny; różnice są zebrane w kilku miejscach:
 
 Qt sam mapuje `Ctrl` w `QKeySequence` na klawisz Command na macOS, więc skróty definiujemy
 raz, w zapisie „Ctrl+…”.
+
+## Wersja PySide6
+
+`requirements.txt` ogranicza PySide6 do `<6.12`. W Qt 6.12.0 pola liczbowe bez strzałek
+(`NoButtons`), którym arkusz stylów ustawia ramkę lub odstępy, dostają pole tekstowe
+szerokości 1 px: wartość jest niewidoczna i nie da się nic wpisać (zgłoszone przy pierwszym
+teście na Windows). `tests/test_widgets.py` sprawdza to dla każdego motywu, więc po
+podniesieniu limitu wersji CI od razu pokaże, czy błąd został naprawiony w Qt.
 
 ## Profilowanie
 

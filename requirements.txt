@@ -1,4 +1,4 @@
-PySide6>=6.6
+PySide6>=6.6,<6.12  # 6.12.0: pola liczbowe ze stylami są puste (tests/test_widgets.py)
 moderngl>=5.10
 numpy>=1.26
 soundfile>=0.12
