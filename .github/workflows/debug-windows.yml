@@ -1,0 +1,19 @@
+name: Debug Windows inputs
+on:
+  push:
+    branches: [debug-windows-inputs]
+jobs:
+  diag:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Domyślnie
+        env: {PYTHONPATH: ".", SEL: "1"}
+        run: python .github/debug/insp_win.py
+      - name: Bez setColorScheme
+        env: {PYTHONPATH: ".", SEL: "1", NOSCHEME: "1"}
+        run: python .github/debug/insp_win.py
