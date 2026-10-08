@@ -18,6 +18,8 @@ datas = [
 datas += [(str(p), "osciviz/i18n") for p in (PKG / "i18n").glob("*.qm")]
 
 HIDDEN = ["glcontext", "moderngl", "sounddevice", "_sounddevice_data", "soundfile"]
+if IS_WINDOWS:
+    HIDDEN.append("pyaudiowpatch")  # dźwięk z głośników (WASAPI loopback), importowany leniwie
 
 a = Analysis(
     [str(ROOT / "packaging" / "launcher.py")],

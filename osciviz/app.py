@@ -97,6 +97,10 @@ def _self_test() -> int:
         "translations": all((I18N_DIR / f"osciviz_{c}.qm").exists() for c in ("pl", "en")),
         "presets": len(PresetManager().all()) > 0,
     }
+    if sys.platform == "win32":
+        from osciviz.core import loopback  # noqa: PLC0415
+
+        checks["loopback"] = loopback.available()  # PyAudioWPatch dołączony do paczki
     for name, ok in checks.items():
         print(f"{name}: {'ok' if ok else 'BRAK'}")
     return 0 if all(checks.values()) else 1

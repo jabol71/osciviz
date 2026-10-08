@@ -48,7 +48,7 @@ from PySide6.QtWidgets import (
 from osciviz import APP_NAME, __version__
 from osciviz.core.analysis import Analyzer
 from osciviz.core.audio_player import AudioPlayer
-from osciviz.core.audio_source import FileSource, LiveSource
+from osciviz.core.audio_source import AudioSource, FileSource, open_live_source
 from osciviz.core.demo import write_demo_wav
 from osciviz.core.frame import build_frame, window_length
 from osciviz.core.image_to_points import make_default_image
@@ -131,7 +131,7 @@ class MainWindow(QMainWindow):
         self.player = AudioPlayer()
         self.player.volume = 0.8
         self.source: FileSource | None = None
-        self.live: LiveSource | None = None
+        self.live: AudioSource | None = None
         self.live_t0 = 0.0
         self.recorder: Recorder | None = None
         self.project_path: str | None = None
@@ -681,11 +681,11 @@ class MainWindow(QMainWindow):
             self.timeline.set_playing(False)
             self.timeline.set_live(True, self.tr("Live input — choose a device and press Start"))
 
-    def start_live(self, device) -> None:
+    def start_live(self, device: tuple[str, int]) -> None:
         self.player.pause()
         self.timeline.set_playing(False)
         try:
-            self.live = LiveSource(device)
+            self.live = open_live_source(*device)
         except Exception as exc:
             self.live = None
             self.source_panel.set_listening(False)

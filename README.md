@@ -5,7 +5,7 @@
 <h1 align="center">OsciViz</h1>
 
 <p align="center">
-  Programowy oscyloskop i edytor wizualizacji audio dla macOS.<br>
+  Programowy oscyloskop i edytor wizualizacji audio dla macOS i Windows.<br>
   Projekt zaliczeniowy z przedmiotu <b>Grafika Komputerowa i GUI</b>.
 </p>
 
@@ -26,7 +26,8 @@ i obraz rozbity na cząsteczki — edytujesz je myszą i klawiaturą, oglądasz 
   pełne **cofnij/ponów** dla każdej edycji.
 - **Renderowanie OpenGL 4.1** (moderngl): grube linie z trójkątów, MSAA 4×, poświata (Gauss
   w dwóch przebiegach), powidok, mieszanie addytywne, Retina.
-- **Na żywo z FL Studio** przez BlackHole, z automatycznym wykrywaniem urządzenia i nagrywaniem sesji do WAV.
+- **Na żywo z FL Studio**: na Windows bez instalacji (dźwięk systemu przez WASAPI loopback) albo przez VB-Cable,
+  na macOS przez BlackHole; nagrywanie sesji do WAV.
 - **Projekt `.osv`** (ZIP z audio i obrazami, zapis atomowy, walidacja, migracje),
   **presety warstw** `.json`, **eksport PNG 4K i MP4** (H.264 + AAC, do 4K/60 fps, w tle, z anulowaniem).
 - **Motywy**: ciemny, jasny, wysoki kontrast. **Języki**: polski i angielski — przełączane bez restartu.
@@ -38,7 +39,13 @@ i obraz rozbity na cząsteczki — edytujesz je myszą i klawiaturą, oglądasz 
 
 ## Uruchomienie
 
-Wymagany macOS 13+ (Apple Silicon lub Intel) i Python 3.12.
+**Gotowa aplikacja**: pobierz paczkę z zakładki [Releases](https://github.com/jabol71/osciviz/releases)
+albo z Actions (**Build macOS app** / **Build Windows app** → artefakty ostatniego przebiegu):
+
+- macOS 13+: `OsciViz-macOS-arm64.zip` (Apple Silicon) lub `OsciViz-macOS-x86_64.zip` (Intel),
+- Windows 10/11: instalator `OsciViz-Windows-x64-setup.exe` lub przenośny `OsciViz-Windows-x64.zip`.
+
+**Ze źródeł** (Python 3.12), macOS:
 
 ```bash
 git clone https://github.com/jabol71/osciviz.git
@@ -49,7 +56,18 @@ pip install -r requirements.txt
 python -m osciviz
 ```
 
-Gotową aplikację `.app` buduje workflow **Build macOS app** (zakładka Actions → *Run workflow*,
+Windows (PowerShell):
+
+```powershell
+git clone https://github.com/jabol71/osciviz.git
+cd osciviz
+py -3.12 -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m osciviz
+```
+
+Paczki budują workflowy **Build macOS app** i **Build Windows app** (zakładka Actions → *Run workflow*,
 albo automatycznie po wypchnięciu tagu `v1.0.0`). Lokalnie:
 `pip install pyinstaller && pyinstaller packaging/osciviz.spec --noconfirm`.
 
@@ -57,7 +75,7 @@ albo automatycznie po wypchnięciu tagu `v1.0.0`). Lokalnie:
 
 - **Instrukcja obsługi**: [pierwsze kroki](docs/user-guide/getting-started.md) ·
   [interfejs](docs/user-guide/interface.md) · [warstwy](docs/user-guide/layers.md) ·
-  [przechwytywanie z FL Studio](docs/user-guide/live-capture.md) ·
+  [przechwytywanie z FL Studio (Windows i macOS)](docs/user-guide/live-capture.md) ·
   [projekty i eksport](docs/user-guide/export.md) · [skróty](docs/user-guide/shortcuts.md)
 - **Dokumentacja techniczna**: [architektura](docs/technical/architecture.md) ·
   [audio](docs/technical/audio.md) · [analiza FFT](docs/technical/analysis.md) ·
@@ -71,7 +89,7 @@ Całość jako strona: `pip install mkdocs-material && mkdocs serve`.
 
 ```bash
 pip install -r requirements-dev.txt
-pytest          # 40 testów: transformacje, FFT, bufor, obraz→punkty, fizyka, .osv, undo, render
+pytest          # testy: transformacje, FFT, bufor, obraz→punkty, fizyka, .osv, undo, render
 ruff check .
 ```
 
@@ -80,4 +98,4 @@ Specyfikacja projektu: [CLAUDE.md](CLAUDE.md). Wszystkie etapy z sekcji 12 są z
 ## Stos
 
 Python 3.12 · PySide6 · moderngl (OpenGL 4.1 Core) · numpy · soundfile · sounddevice ·
-OpenCV · Pillow · imageio-ffmpeg · pytest · ruff · PyInstaller · MkDocs
+OpenCV · Pillow · imageio-ffmpeg · PyAudioWPatch (Windows) · pytest · ruff · PyInstaller · MkDocs

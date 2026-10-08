@@ -18,6 +18,8 @@ mkdocs serve               # podgląd dokumentacji na http://127.0.0.1:8000
 | `test_transform.py` | złożenie i odwrotność macierzy, hit test po obrocie i skali |
 | `test_analysis.py` | sinus 60 Hz → maksimum w basie, 5 kHz → w wysokich; skala amplitudy; obwiednia |
 | `test_ring_buffer.py` | zawijanie, kolejność, dopełnianie zerami, blok większy niż bufor |
+| `test_devices.py` | Windows: tylko urządzenia WASAPI; wykrywanie BlackHole i VB-Cable |
+| `test_loopback.py` | loopback: dwa pierwsze kanały z 5.1, mono → stereo, cisza po przerwie |
 | `test_image_to_points.py` | liczba punktów, zakres współrzędnych, kolory z obrazu, wszystkie metody |
 | `test_particles.py` | bez basu cząsteczki wracają do spoczynku; stabilność przy dużym kroku |
 | `test_project_io.py` | zapis → odczyt daje identyczną scenę; uszkodzony plik; migracja v1 |
@@ -71,6 +73,7 @@ Kod jest wspólny; różnice są zebrane w kilku miejscach:
 | Czcionka interfejsu | `app.py` | systemowa (SF) | Segoe UI Variable / Segoe UI |
 | Ustawienia, wyjście | `gui/main_window.py` | ⌘, i ⌘Q (standard Qt) | Ctrl+, i Ctrl+Q |
 | Koder sprzętowy | `gui/export_dialog.py` | VideoToolbox | — (tylko libx264) |
+| Przechwytywanie na żywo | `core/audio_source.py`, `core/loopback.py` | BlackHole (wejście) | dźwięk systemu (WASAPI loopback) albo VB-Cable |
 | Uprawnienie mikrofonu | `Info.plist` / komunikat w GUI | System Settings | Ustawienia → Prywatność |
 
 Qt sam mapuje `Ctrl` w `QKeySequence` na klawisz Command na macOS, więc skróty definiujemy

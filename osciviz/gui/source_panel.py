@@ -1,8 +1,9 @@
 """Panel źródła dźwięku: plik albo przechwytywanie na żywo (np. z FL Studio).
 
-Tryb „Na żywo” pokazuje listę urządzeń wejściowych i automatycznie wybiera
-BlackHole, jeśli jest zainstalowany. Gdy go nie ma, wyświetla wskazówkę
-z odnośnikiem do instrukcji konfiguracji. Przycisk REC nagrywa sesję do WAV.
+Tryb „Na żywo” pokazuje listę źródeł i sam wybiera najlepsze: na Windows
+dźwięk z głównych głośników (WASAPI loopback), na macOS — BlackHole. Wirtualny
+kabel (BlackHole, VB-Cable) jest podświetlony. Gdy nie ma żadnego sposobu
+przechwycenia FL Studio, panel pokazuje odnośnik do instrukcji konfiguracji. Przycisk REC nagrywa sesję do WAV.
 """
 
 from __future__ import annotations
@@ -10,10 +11,10 @@ from __future__ import annotations
 from PySide6.QtCore import QSize, Qt, Signal
 from PySide6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QPushButton, QStackedWidget, QVBoxLayout, QWidget
 
-from osciviz.core.audio_source import list_input_devices
+from osciviz.core.audio_source import list_live_devices
 from osciviz.core.sd import import_error
 from osciviz.gui.icons import icon
-from osciviz.gui.keys import with_keys
+from osciviz.gui.keys import IS_WINDOWS, with_keys
 from osciviz.gui.theme import theme
 from osciviz.gui.widgets import Segmented, label, tool_button
 
@@ -158,25 +159,49 @@ class SourcePanel(QFrame):
     def refresh_devices(self) -> None:
         self.devices.clear()
         err = import_error()
-        devices = list_input_devices()
-        blackhole_index = -1
+        devices = list_live_devices()
+        preferred = -1  # indeks pozycji wybieranej automatycznie
+        has_loopback = has_virtual = False
         for d in devices:
-            star = icon("live", theme.tokens["accent"]) if d["is_virtual"] else icon("mic", theme.tokens["muted"])
-            self.devices.addItem(star, d["name"], d["index"])
-            if d["is_virtual"] and blackhole_index < 0:
-                blackhole_index = self.devices.count() - 1
-        if blackhole_index >= 0:
-            self.devices.setCurrentIndex(blackhole_index)
-            self.hint.setText(self.tr("BlackHole detected — set FL Studio's output to your "
-                                      "Multi-Output Device and press Start."))
-        elif err:
-            self.hint.setText(self.tr("Audio input is unavailable on this system (PortAudio missing)."))
-        elif not devices:
-            self.hint.setText(self.tr("No input devices found."))
-        else:
-            self.hint.setText(self.tr('BlackHole not found. To capture FL Studio, install BlackHole 2ch — '
-                                      '<a href="%1">setup guide</a>.').replace("%1", GUIDE_URL))
+            if d["kind"] == "loopback":
+                has_loopback = True
+                text = self.tr("System sound: %1").replace("%1", d["name"])
+                item_icon = icon("volume", theme.tokens["accent"] if d["is_default"] else theme.tokens["muted"])
+            else:
+                has_virtual = has_virtual or d["is_virtual"]
+                text = d["name"]
+                item_icon = icon("live", theme.tokens["accent"]) if d["is_virtual"] else icon("mic", theme.tokens["muted"])
+            self.devices.addItem(item_icon, text, (d["kind"], d["index"]))
+            # Na Windows domyślnie dźwięk z głównego wyjścia; na macOS — BlackHole.
+            wanted = d["is_default"] if has_loopback else d["is_virtual"]
+            if wanted and preferred < 0:
+                preferred = self.devices.count() - 1
+        if preferred >= 0:
+            self.devices.setCurrentIndex(preferred)
+        self.hint.setText(self._hint_text(devices, err, has_loopback, has_virtual))
         self.listen_btn.setEnabled(bool(devices))
+
+    def _hint_text(self, devices: list, err: str | None, has_loopback: bool, has_virtual: bool) -> str:
+        if has_loopback:
+            text = self.tr("“System sound” captures everything playing on the chosen speakers. "
+                           "Play something in FL Studio and press Start.")
+            if has_virtual:
+                text += " " + self.tr("VB-Cable detected: choose “CABLE Output” if FL Studio plays into CABLE Input.")
+            return text
+        if has_virtual:
+            if IS_WINDOWS:
+                return self.tr("VB-Cable detected — set FL Studio's output to CABLE Input and press Start.")
+            return self.tr("BlackHole detected — set FL Studio's output to your "
+                           "Multi-Output Device and press Start.")
+        if err and not devices:
+            return self.tr("Audio input is unavailable on this system (PortAudio missing).")
+        if not devices:
+            return self.tr("No input devices found.")
+        if IS_WINDOWS:
+            return self.tr('To capture FL Studio, install VB-Cable — <a href="%1">setup guide</a>.').replace(
+                "%1", GUIDE_URL)
+        return self.tr('BlackHole not found. To capture FL Studio, install BlackHole 2ch — '
+                       '<a href="%1">setup guide</a>.').replace("%1", GUIDE_URL)
 
     def _listen_toggled(self, on: bool) -> None:
         self._update_listen_text()

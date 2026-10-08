@@ -197,3 +197,27 @@ def list_input_devices() -> list[dict]:
     except Exception:
         return []
     return select_input_devices(devices, hostapis, sys.platform)
+
+
+def list_live_devices() -> list[dict]:
+    """Wszystkie źródła trybu „na żywo” w jednej liście.
+
+    Najpierw urządzenia loopback (tylko Windows: dźwięk z głośników), potem
+    zwykłe wejścia (mikrofony, BlackHole, VB-Cable). Każdy słownik ma pole
+    ``kind`` (``"loopback"`` albo ``"input"``) — razem z ``index`` wskazuje,
+    jak otworzyć urządzenie w ``open_live_source``.
+    """
+    from osciviz.core import loopback  # noqa: PLC0415 (loopback importuje ten moduł)
+
+    items = [dict(d, kind="loopback", is_virtual=False) for d in loopback.list_loopback_devices()]
+    items += [dict(d, kind="input", is_default=False) for d in list_input_devices()]
+    return items
+
+
+def open_live_source(kind: str, index: int) -> AudioSource:
+    """Otwiera źródło na żywo wskazane przez ``(kind, index)`` z ``list_live_devices``."""
+    if kind == "loopback":
+        from osciviz.core.loopback import LoopbackSource  # noqa: PLC0415
+
+        return LoopbackSource(index)
+    return LiveSource(index)

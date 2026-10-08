@@ -6,3 +6,4 @@ sounddevice>=0.4.6
 opencv-python>=4.8
 Pillow>=10.0
 imageio-ffmpeg>=0.4.9
+PyAudioWPatch>=0.2.12; sys_platform == "win32"
