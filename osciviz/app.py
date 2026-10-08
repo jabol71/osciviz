@@ -45,24 +45,12 @@ def main(argv: list[str] | None = None) -> int:
         app.setFont(font)
 
     # Import po utworzeniu QApplication (moduły GUI tworzą ikony przy imporcie).
-    from osciviz.gui.main_window import MainWindow, install_translator  # noqa: PLC0415
+    from osciviz.gui.main_window import MainWindow  # noqa: PLC0415
     from osciviz.gui.theme import theme  # noqa: PLC0415
 
     settings = QSettings()
     theme.apply(app, settings.value("ui/theme", "dark"))
-    language = settings.value("ui/language", "pl")
-
-    class _Holder:
-        translator = None
-
-    holder = _Holder()
-    install_translator(app, language, holder)
-    window = MainWindow(app)
-    window.translator = holder.translator
-    window.language = language
-    window.retranslate()
-    for act in window.lang_group.actions():
-        act.setChecked(act.data() == language)
+    window = MainWindow(app)  # okno samo wczytuje język z QSettings
 
     if "--self-test" in argv:
         # Używane przez CI po spakowaniu: okno powstało, więc wszystkie moduły
@@ -78,10 +66,6 @@ def main(argv: list[str] | None = None) -> int:
         settings.setValue("ui/first_run_done", True)
     window.show()
     return app.exec()
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
 
 
 def _self_test() -> int:
@@ -104,3 +88,7 @@ def _self_test() -> int:
     for name, ok in checks.items():
         print(f"{name}: {'ok' if ok else 'BRAK'}")
     return 0 if all(checks.values()) else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

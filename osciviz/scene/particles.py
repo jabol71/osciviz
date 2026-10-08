@@ -23,8 +23,6 @@ import math
 
 import numpy as np
 
-PUSH_MODES = ("radial", "noise", "jitter")
-
 
 class ParticleSystem:
     def __init__(self, rest_pos: np.ndarray, colors: np.ndarray, seed: int = 0) -> None:

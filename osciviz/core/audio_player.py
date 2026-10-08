@@ -40,10 +40,6 @@ class AudioPlayer:
         return self._playing
 
     @property
-    def has_audio_device(self) -> bool:
-        return get_sounddevice() is not None
-
-    @property
     def position(self) -> int:
         """Bieżąca pozycja w próbkach."""
         if self._playing and self._stream is None and self.source is not None:
