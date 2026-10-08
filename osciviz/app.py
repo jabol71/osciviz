@@ -77,7 +77,7 @@ def _self_test() -> int:
 
     checks = {
         "shaders": bool(load_shader("mesh.vert")),
-        "themes": all((THEMES_DIR / f"{n}.qss").exists() for n in ("dark", "light", "high_contrast")),
+        "themes": (THEMES_DIR / "base.qss.template").exists(),
         "translations": all((I18N_DIR / f"osciviz_{c}.qm").exists() for c in ("pl", "en")),
         "presets": len(PresetManager().all()) > 0,
     }

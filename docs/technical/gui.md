@@ -21,8 +21,8 @@ Zegar `QTimer` (16 ms, `PreciseTimer`) napędza podgląd.
 ## Motywy
 
 Kolory motywu to słownik tokenów w `theme.py` (`bg`, `surface`, `border`, `text`, `accent`…).
-`themes/base.qss.template` zawiera jeden arkusz z `{{token}}`; `python -m osciviz.gui.theme`
-generuje z niego `dark.qss`, `light.qss` i `high_contrast.qss`. Tokeny są też używane w kodzie
+`themes/base.qss.template` zawiera jeden arkusz z `{{token}}`; przy włączeniu motywu `theme.py`
+podstawia w nim kolory (ciemny, jasny, wysoki kontrast). Tokeny są też używane w kodzie
 rysującym (płótno, oś czasu, ikony). Wybór jest zapamiętywany w `QSettings` (`ui/theme`).
 
 ## Tłumaczenia
