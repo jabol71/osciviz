@@ -1,4 +1,4 @@
-# Budowanie, testy i paczka .app
+# Budowanie, testy i paczki (.app, .exe)
 
 ## Środowisko deweloperskie
 
@@ -39,6 +39,42 @@ pozwoli czytać BlackHole), dołącza shadery, motywy, tłumaczenia i presety. I
 Workflow **Build macOS app** (GitHub Actions) buduje paczkę na runnerze macOS i udostępnia
 ją jako artefakty `OsciViz-macOS-arm64.zip` i `OsciViz-macOS-x86_64.zip` (oraz w wydaniu, gdy
 wypchniesz tag `v*`) — można je pobrać bez instalowania Pythona.
+
+## Paczka Windows (PyInstaller + Inno Setup)
+
+Ta sama specyfikacja na Windows buduje folder `dist\OsciViz\` z `OsciViz.exe` (ikona
+`packaging/OsciViz.ico`, okno bez konsoli):
+
+```powershell
+pip install pyinstaller
+pyinstaller packaging/osciviz.spec --noconfirm
+dist\OsciViz\OsciViz.exe
+```
+
+Instalator buduje [Inno Setup 6](https://jrsoftware.org/isinfo.php) ze skryptu
+`packaging/osciviz.iss`: `iscc /DAppVersion=1.0.0 packaging\osciviz.iss` →
+`dist\OsciViz-Windows-x64-setup.exe`. Instaluje „na użytkownika” (bez uprawnień
+administratora), dodaje skrót w menu Start i kojarzy pliki `.osv`.
+
+Workflow **Build Windows app** robi to wszystko na runnerze `windows-latest` i publikuje
+`OsciViz-Windows-x64.zip` (wersja przenośna) oraz `OsciViz-Windows-x64-setup.exe`.
+Po spakowaniu oba workflowy uruchamiają `OsciViz --self-test`, który sprawdza, czy paczka
+zawiera shadery, motywy, tłumaczenia i presety.
+
+## Różnice między platformami
+
+Kod jest wspólny; różnice są zebrane w kilku miejscach:
+
+| Co | Gdzie | macOS | Windows |
+|---|---|---|---|
+| Zapis skrótów w podpowiedziach | `gui/keys.py` | ⌘Z, ⇧⌘S | Ctrl+Z, Ctrl+Shift+S |
+| Czcionka interfejsu | `app.py` | systemowa (SF) | Segoe UI Variable / Segoe UI |
+| Ustawienia, wyjście | `gui/main_window.py` | ⌘, i ⌘Q (standard Qt) | Ctrl+, i Ctrl+Q |
+| Koder sprzętowy | `gui/export_dialog.py` | VideoToolbox | — (tylko libx264) |
+| Uprawnienie mikrofonu | `Info.plist` / komunikat w GUI | System Settings | Ustawienia → Prywatność |
+
+Qt sam mapuje `Ctrl` w `QKeySequence` na klawisz Command na macOS, więc skróty definiujemy
+raz, w zapisie „Ctrl+…”.
 
 ## Profilowanie
 

@@ -161,9 +161,9 @@ class SourcePanel(QFrame):
         devices = list_input_devices()
         blackhole_index = -1
         for d in devices:
-            star = icon("live", theme.tokens["accent"]) if d["is_blackhole"] else icon("mic", theme.tokens["muted"])
+            star = icon("live", theme.tokens["accent"]) if d["is_virtual"] else icon("mic", theme.tokens["muted"])
             self.devices.addItem(star, d["name"], d["index"])
-            if d["is_blackhole"] and blackhole_index < 0:
+            if d["is_virtual"] and blackhole_index < 0:
                 blackhole_index = self.devices.count() - 1
         if blackhole_index >= 0:
             self.devices.setCurrentIndex(blackhole_index)

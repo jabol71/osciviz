@@ -8,6 +8,7 @@ wizualizacji nie wie (i nie musi wiedzieć), skąd pochodzi dźwięk.
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -113,15 +114,18 @@ class LiveSource(AudioSource):
         sd = get_sounddevice()
         if sd is None:
             raise RuntimeError("Biblioteka sounddevice/PortAudio jest niedostępna")
+        info = sd.query_devices(device, "input")
         if sample_rate is None:
-            info = sd.query_devices(device, "input")
             sample_rate = int(info["default_samplerate"]) or 48000
         self.sample_rate = int(sample_rate)
         self.device = device
+        # Mikrofon bywa mono. Blok (n, 1) zapisany do bufora (n, 2) numpy sam
+        # „rozciąga” na oba kanały (broadcasting), więc callback nadal nic nie alokuje.
+        channels = 2 if int(info.get("max_input_channels", 2)) >= 2 else 1
         self.buffer = RingBuffer(int(self.sample_rate * buffer_seconds), channels=2)
         self.recorder = None  # ustawiane z zewnątrz (core.recorder.Recorder)
         self._stream = sd.InputStream(
-            device=device, channels=2, samplerate=self.sample_rate,
+            device=device, channels=channels, samplerate=self.sample_rate,
             blocksize=blocksize, dtype="float32", callback=self._callback,
         )
         self._stream.start()
@@ -142,23 +146,54 @@ class LiveSource(AudioSource):
             self._stream = None
 
 
+# Fragmenty nazw wirtualnych kabli audio: BlackHole (macOS) i VB-Cable (Windows).
+# Takie urządzenie podświetlamy i wybieramy domyślnie — to przez nie płynie dźwięk z FL Studio.
+VIRTUAL_CABLE_NAMES = ("blackhole", "cable output", "vb-audio")
+
+
+def is_virtual_cable(name: str) -> bool:
+    lower = name.lower()
+    return any(part in lower for part in VIRTUAL_CABLE_NAMES)
+
+
+def select_input_devices(devices, hostapis, platform: str) -> list[dict]:
+    """Wybiera urządzenia wejściowe z listy zwróconej przez ``sounddevice``.
+
+    Na Windows PortAudio pokazuje każde urządzenie kilka razy — raz dla każdego
+    interfejsu systemu (MME, DirectSound, WASAPI, WDM-KS), a MME dodatkowo obcina
+    nazwy do 31 znaków. Zostawiamy więc tylko WASAPI: ma pełne nazwy i najmniejsze
+    opóźnienie. Gdyby WASAPI nie było, pokazujemy wszystko.
+    Funkcja jest czysta (bez wywołań sounddevice), żeby dało się ją przetestować.
+    """
+    wanted_api = None
+    if platform == "win32":
+        for i, api in enumerate(hostapis):
+            if "wasapi" in api.get("name", "").lower():
+                wanted_api = i
+    result = []
+    for index, dev in enumerate(devices):
+        if dev.get("max_input_channels", 0) <= 0:
+            continue
+        if wanted_api is not None and dev.get("hostapi") != wanted_api:
+            continue
+        result.append({
+            "index": index,
+            "name": dev["name"],
+            "channels": dev["max_input_channels"],
+            "samplerate": dev.get("default_samplerate", 48000),
+            "is_virtual": is_virtual_cable(dev["name"]),
+        })
+    return result
+
+
 def list_input_devices() -> list[dict]:
-    """Lista urządzeń wejściowych: ``[{index, name, channels, samplerate, is_blackhole}]``."""
+    """Lista urządzeń wejściowych: ``[{index, name, channels, samplerate, is_virtual}]``."""
     sd = get_sounddevice()
     if sd is None:
         return []
-    result = []
     try:
         devices = sd.query_devices()
+        hostapis = sd.query_hostapis()
     except Exception:
         return []
-    for index, dev in enumerate(devices):
-        if dev.get("max_input_channels", 0) > 0:
-            result.append({
-                "index": index,
-                "name": dev["name"],
-                "channels": dev["max_input_channels"],
-                "samplerate": dev.get("default_samplerate", 48000),
-                "is_blackhole": "blackhole" in dev["name"].lower(),
-            })
-    return result
+    return select_input_devices(devices, hostapis, sys.platform)

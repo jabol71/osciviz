@@ -12,7 +12,7 @@ Ten plik jest specyfikacją i planem pracy dla Claude Code. Czytaj go na począt
   - każdy moduł ma docstring wyjaśniający, CO robi i DLACZEGO tak,
   - nietrywialna matematyka (FFT, macierze transformacji, fizyka cząsteczek, shadery) ma komentarze krok po kroku,
   - po zakończeniu modułu dopisz krótkie wyjaśnienie do `docs/technical/<moduł>.md`.
-- Platforma docelowa: **macOS (Apple Silicon i Intel), macOS 13+**. Nie dodawaj kodu specyficznego dla Windowsa.
+- Platformy docelowe: **macOS 13+ (Apple Silicon i Intel)** oraz **Windows 10/11 (x64)**. Kod jest wspólny; różnice platform trzymaj w nielicznych, opisanych miejscach (`gui/keys.py`, `app.py`, `core/audio_source.py`, `packaging/`) — zob. `docs/technical/build.md`.
 - Język kodu: identyfikatory po angielsku, komentarze i docstringi po polsku, teksty UI przez system tłumaczeń (PL domyślnie, EN dodatkowo).
 
 ## 1. Kontekst przedmiotu

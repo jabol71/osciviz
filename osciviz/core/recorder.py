@@ -44,7 +44,8 @@ class Recorder:
     def push(self, block: np.ndarray) -> None:
         """Wywoływane z callbacku audio — tylko kopia i wrzucenie do kolejki."""
         if self._running:
-            self._queue.put(block.copy())
+            # Kopia jest i tak potrzebna; dla wejścia mono od razu robimy z niej stereo.
+            self._queue.put(np.repeat(block, 2, axis=1) if block.shape[1] == 1 else block.copy())
 
     def stop(self) -> str:
         """Kończy nagrywanie, czeka na zapis reszty kolejki i zwraca ścieżkę pliku."""
