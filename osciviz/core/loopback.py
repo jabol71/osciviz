@@ -22,8 +22,7 @@ import time
 
 import numpy as np
 
-from osciviz.core.audio_source import AudioSource
-from osciviz.core.ring_buffer import RingBuffer
+from osciviz.core.audio_source import BufferedSource
 
 # Po takiej przerwie bez danych uznajemy, że w systemie panuje cisza.
 SILENCE_AFTER = 0.15  # s
@@ -88,10 +87,8 @@ def list_loopback_devices() -> list[dict]:
         pa.terminate()
 
 
-class LoopbackSource(AudioSource):
+class LoopbackSource(BufferedSource):
     """Źródło na żywo z loopbacku WASAPI. Interfejs taki sam jak ``LiveSource``."""
-
-    is_live = True
 
     def __init__(self, device_index: int, blocksize: int = 512, buffer_seconds: float = 2.0) -> None:
         pa_mod = _get_pyaudio()
@@ -104,8 +101,7 @@ class LoopbackSource(AudioSource):
             # Wyjście 5.1/7.1 ma więcej kanałów — bierzemy dwa pierwsze (lewy, prawy).
             self._channels = max(1, int(info["maxInputChannels"]))
             self.device = device_index
-            self.buffer = RingBuffer(int(self.sample_rate * buffer_seconds), channels=2)
-            self.recorder = None  # ustawiane z zewnątrz (core.recorder.Recorder)
+            self._init_buffer(buffer_seconds)
             self._last_block = 0.0
             self._stream = self._pa.open(
                 format=pa_mod.paFloat32, channels=self._channels, rate=self.sample_rate,
@@ -121,17 +117,14 @@ class LoopbackSource(AudioSource):
     def _callback(self, in_data, frame_count, time_info, status):  # wątek audio
         # Bajty → widok (n, kanały) bez kopiowania; zapis do bufora robi jedyną kopię.
         block = np.frombuffer(in_data, dtype=np.float32).reshape(-1, self._channels)[:, :2]
-        self.buffer.write(block)
-        recorder = self.recorder
-        if recorder is not None:
-            recorder.push(block)
+        self._push(block)
         self._last_block = time.perf_counter()
         return None, self._continue
 
     def get_window(self, n_samples: int) -> np.ndarray:
         if time.perf_counter() - self._last_block > SILENCE_AFTER:
             return np.zeros((n_samples, 2), dtype=np.float32)
-        return self.buffer.latest(n_samples)
+        return super().get_window(n_samples)
 
     def close(self) -> None:
         if self._stream is not None:

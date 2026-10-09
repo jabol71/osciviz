@@ -136,7 +136,8 @@ class MainWindow(QMainWindow):
         self.recorder: Recorder | None = None
         self.project_path: str | None = None
         self.translator: QTranslator | None = None
-        self.language = "pl"
+        self.language = self.settings.value("ui/language", "pl")
+        install_translator(app, self.language, self)
         self._extra_dirty = False
         self._last_tick = time.perf_counter()
         self._fps_frames = 0
@@ -164,7 +165,7 @@ class MainWindow(QMainWindow):
         self._restore_settings()
 
         self.undo.cleanChanged.connect(self._update_title)
-        self.undo.indexChanged.connect(self._on_undo_index)
+        self.undo.indexChanged.connect(self._update_title)
         self.scene.selection_changed.connect(self._update_actions)
         self.scene.layers_changed.connect(self._update_actions)
 
@@ -243,7 +244,7 @@ class MainWindow(QMainWindow):
         self.canvas.glError.connect(self._on_gl_error)
         self.inspector.requestApplyPreset.connect(self.apply_preset)
         self.inspector.requestSavePreset.connect(self.save_preset)
-        self.inspector.canvasOptionsChanged.connect(self._sync_view_actions)
+        self.canvas.optionsChanged.connect(self._sync_view_actions)
         self.timeline.playToggled.connect(self.toggle_play)
         self.timeline.rewind.connect(self.rewind)
         self.timeline.seekRequested.connect(self.seek)
@@ -365,12 +366,12 @@ class MainWindow(QMainWindow):
         a("deselect", lambda: self.scene.set_selection([]), "Esc")
         for type_name in LAYER_TYPES:
             a(f"add_{type_name}", lambda _=False, t=type_name: self.add_layer(t), None, LAYER_ICONS[type_name])
-        a("raise", lambda: self.canvas._restack(1), "Ctrl+]", "chevron-up")
-        a("lower", lambda: self.canvas._restack(-1), "Ctrl+[", "chevron-down")
+        a("raise", lambda: self.canvas.restack(1), "Ctrl+]", "chevron-up")
+        a("lower", lambda: self.canvas.restack(-1), "Ctrl+[", "chevron-down")
         a("save_preset", self.save_preset, None, "preset")
-        a("grid", self._toggle_grid, None, "grid", checkable=True)
-        a("snap", self._toggle_snap, None, "magnet", checkable=True)
-        a("rulers", self._toggle_rulers, None, None, checkable=True)
+        a("grid", lambda on: self.canvas.set_option("show_grid", on), None, "grid", checkable=True)
+        a("snap", lambda on: self.canvas.set_option("snap", on), None, "magnet", checkable=True)
+        a("rulers", lambda on: self.canvas.set_option("show_rulers", on), None, None, checkable=True)
         a("fit", lambda: self.canvas.fit_view(), "Ctrl+0", "fit")
         a("zoom_in", lambda: self.canvas.zoom_by(1.25), "Ctrl++")
         a("zoom_out", lambda: self.canvas.zoom_by(0.8), "Ctrl+-")
@@ -537,23 +538,6 @@ class MainWindow(QMainWindow):
         self.settings.setValue("view/snap", self.canvas.snap)
         self.settings.setValue("view/rulers", self.canvas.show_rulers)
 
-    def _toggle_grid(self) -> None:
-        self.canvas.show_grid = self.actions_by_name["grid"].isChecked()
-        self.canvas.update()
-        self._sync_view_actions()
-        self.inspector.refresh()
-
-    def _toggle_snap(self) -> None:
-        self.canvas.snap = self.actions_by_name["snap"].isChecked()
-        self._sync_view_actions()
-        self.inspector.refresh()
-
-    def _toggle_rulers(self) -> None:
-        self.canvas.show_rulers = self.actions_by_name["rulers"].isChecked()
-        self.canvas.update()
-        self._sync_view_actions()
-        self.inspector.refresh()
-
     def set_theme(self, name: str) -> None:
         theme.apply(self.app, name)
         self.settings.setValue("ui/theme", theme.name)
@@ -590,11 +574,10 @@ class MainWindow(QMainWindow):
         now = time.perf_counter()
         dt = min(max(now - self._last_tick, 1 / 240), 0.1)
         self._last_tick = now
-        sr = 48000
-        playing = False
+        source = self.live or self.source
+        sr = source.sample_rate if source else 48000
+        n = window_length(sr, self.analyzer.fft_size)
         if self.live is not None:
-            sr = self.live.sample_rate
-            n = window_length(sr, self.analyzer.fft_size)
             samples = self.live.get_window(n)
             t = now - self.live_t0
             playing = True
@@ -602,19 +585,16 @@ class MainWindow(QMainWindow):
                 text = self.tr("Recording  %1").replace("%1", format_time(self.recorder.elapsed))
                 self.timeline.set_live(True, text, recording=True)
         elif self.source is not None:
-            sr = self.source.sample_rate
-            n = window_length(sr, self.analyzer.fft_size)
             pos = self.player.position
             samples = self.source.window_at(pos, n)
             t = pos / sr
             playing = self.player.is_playing
             self.timeline.set_time(t)
-            if not playing and self.timeline._playing:
+            if not playing and self.timeline.playing:
                 self.timeline.set_playing(False)
         else:
-            n = window_length(sr, self.analyzer.fft_size)
             samples = np.zeros((n, 2), np.float32)
-            t = 0.0
+            t, playing = 0.0, False
         frame = build_frame(samples, sr, self.analyzer, t, dt, playing)
         self.sim.update(self.scene, frame, self.default_image)
         self.canvas.set_frame(frame)
@@ -649,10 +629,7 @@ class MainWindow(QMainWindow):
                                               self.tr(AUDIO_FILTER))
         if path:
             self._remember_dir(path)
-            if self.load_audio(path):
-                self.scene.audio_path = path
-                self._extra_dirty = True
-                self._update_title()
+            self._use_audio(path)
 
     def load_audio(self, path: str) -> bool:
         try:
@@ -671,6 +648,13 @@ class MainWindow(QMainWindow):
         self.source_panel.set_file_info((Path(path).name, source.duration, source.sample_rate))
         self.sim.reset()
         return True
+
+    def _use_audio(self, path: str) -> None:
+        """Wczytuje plik i ustawia go jako dźwięk projektu (zmiana do zapisania)."""
+        if self.load_audio(path):
+            self.scene.audio_path = path
+            self._extra_dirty = True
+            self._update_title()
 
     def _on_source_mode(self, mode: str) -> None:
         if mode == "file":
@@ -733,10 +717,7 @@ class MainWindow(QMainWindow):
                         "(for MP4 export)?").replace("%1", format_time(seconds)).replace("%2", path))
             if answer == QMessageBox.Yes:
                 self.stop_live()
-                if self.load_audio(path):
-                    self.scene.audio_path = path
-                    self._extra_dirty = True
-                    self._update_title()
+                self._use_audio(path)
 
     # ======================================================================
     # Warstwy
@@ -851,9 +832,6 @@ class MainWindow(QMainWindow):
     # ======================================================================
     def is_dirty(self) -> bool:
         return not self.undo.isClean() or self._extra_dirty
-
-    def _on_undo_index(self, _index: int) -> None:
-        self._update_title()
 
     def _update_title(self) -> None:
         name = Path(self.project_path).stem if self.project_path else self.tr("Untitled")

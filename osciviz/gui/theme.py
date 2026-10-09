@@ -1,10 +1,9 @@
 """Motywy: ciemny, jasny i wysoki kontrast.
 
 Kolory każdego motywu to słownik „tokenów” (tło, powierzchnia, ramka, tekst,
-akcent…). Arkusze stylów ``themes/*.qss`` powstają z jednego szablonu
-``themes/base.qss.template`` przez podstawienie tokenów — dzięki temu trzy
-motywy zawsze mają ten sam układ, a różnią się tylko kolorami.
-Po zmianie szablonu lub tokenów uruchom: ``python -m osciviz.gui.theme``.
+akcent…). Arkusz stylów motywu powstaje przy jego włączeniu z jednego
+szablonu ``themes/base.qss.template`` przez podstawienie tokenów — dzięki temu
+trzy motywy zawsze mają ten sam układ, a różnią się tylko kolorami.
 
 Tokeny są też używane w kodzie rysującym (płótno, oś czasu), bo QSS nie
 sięga do tego, co malujemy ręcznie przez ``QPainter``.
@@ -63,11 +62,6 @@ def build_stylesheet(name: str) -> str:
     return template
 
 
-def write_stylesheets() -> None:
-    for name in THEME_NAMES:
-        (THEMES_DIR / f"{name}.qss").write_text(build_stylesheet(name), encoding="utf-8")
-
-
 class ThemeManager:
     """Trzyma aktywny motyw i nakłada go na aplikację."""
 
@@ -87,9 +81,7 @@ class ThemeManager:
 
     def apply(self, app: QApplication, name: str) -> None:
         self.name = name if name in TOKENS else "dark"
-        path = THEMES_DIR / f"{self.name}.qss"
-        qss = path.read_text(encoding="utf-8") if path.exists() else build_stylesheet(self.name)
-        qss = qss.replace("@CHEVRON@", self._chevron_file())
+        qss = build_stylesheet(self.name).replace("@CHEVRON@", self._chevron_file())
         # Paleta dla elementów rysowanych natywnie (np. okna dialogowe systemu).
         t = self.tokens
         palette = QPalette()
@@ -114,7 +106,6 @@ class ThemeManager:
             dark = QColor(t["bg"]).lightness() < 128
             hints.setColorScheme(Qt.ColorScheme.Dark if dark else Qt.ColorScheme.Light)
 
-
     def _chevron_file(self) -> str:
         """Strzałka list rozwijanych jako plik SVG w kolorze motywu (QSS wymaga ścieżki)."""
         from osciviz.gui.icons import svg_source  # noqa: PLC0415
@@ -127,7 +118,3 @@ class ThemeManager:
 
 
 theme = ThemeManager()  # jedna instancja na aplikację
-
-if __name__ == "__main__":
-    write_stylesheets()
-    print("Zapisano:", ", ".join(f"{n}.qss" for n in THEME_NAMES))

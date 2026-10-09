@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import queue
 import threading
-import time
 from pathlib import Path
 
 import numpy as np
@@ -25,11 +24,6 @@ class Recorder:
         self._thread: threading.Thread | None = None
         self._running = False
         self.frames_written = 0
-        self.started_at = 0.0
-
-    @property
-    def is_recording(self) -> bool:
-        return self._running
 
     @property
     def elapsed(self) -> float:
@@ -37,7 +31,6 @@ class Recorder:
 
     def start(self) -> None:
         self._running = True
-        self.started_at = time.monotonic()
         self._thread = threading.Thread(target=self._writer, name="osciviz-recorder", daemon=True)
         self._thread.start()
 

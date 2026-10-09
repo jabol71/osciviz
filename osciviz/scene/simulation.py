@@ -44,7 +44,8 @@ class Simulation:
         self.spectrum.clear()
         for state in self.particles.values():
             state.system.reset()
-            state.bass.reset()
+            for env in (state.bass, state.mid, state.high):
+                env.reset()
 
     def update(self, scene: Scene, frame: FrameContext, default_image: str | None = None) -> None:
         alive = set()
