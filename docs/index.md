@@ -1,7 +1,7 @@
 # OsciViz
 
 **OsciViz** to desktopowy edytor wizualizacji audio działający jak programowy oscyloskop
-(macOS 13+, Apple Silicon i Intel). Na płótnie układasz warstwy reagujące na dźwięk —
+(macOS 13+ na Apple Silicon i Intel oraz Windows 10/11). Na płótnie układasz warstwy reagujące na dźwięk —
 przebieg czasowy, oscyloskop XY, widmo FFT i obraz rozbity na cząsteczki — a potem
 eksportujesz wynik do PNG albo MP4 z dźwiękiem.
 

@@ -2,26 +2,26 @@
 
 ## Projekt `.osv`
 
-**Plik → Zapisz** (⌘S) zapisuje cały projekt w jednym pliku `.osv`: ustawienia płótna, wszystkie
+**Plik → Zapisz** (⌘S / Ctrl+S) zapisuje cały projekt w jednym pliku `.osv`: ustawienia płótna, wszystkie
 warstwy, **kopię pliku audio** i **obrazy warstw cząsteczek**. Projekt można więc przenieść na
 inny komputer bez szukania plików. Zapis jest bezpieczny — przerwany zapis nie niszczy
 poprzedniej wersji.
 
 ## Zrzut PNG
 
-Ikona aparatu lub **⇧⌘S** — bieżąca klatka w rozdzielczości 4K (dłuższy bok zgodny z proporcjami),
+Ikona aparatu lub **⇧⌘S** (Ctrl+Shift+S) — bieżąca klatka w rozdzielczości 4K (dłuższy bok zgodny z proporcjami),
 bez siatki, uchwytów i ramek.
 
 ## Wideo MP4
 
-**Eksport** (⌘E) otwiera okno eksportu:
+**Eksport** (⌘E / Ctrl+E) otwiera okno eksportu:
 
 | Opcja | Opis |
 |---|---|
 | Rozdzielczość | 720p, 1080p, 1440p lub 4K, dopasowane do proporcji płótna |
 | Klatki na sekundę | 30 lub 60 |
 | Jakość (CRF) | 12–32; mniej = lepsza jakość. 18 to jakość wizualnie bezstratna |
-| Koder | *libx264* (najlepsza jakość) lub *VideoToolbox* (sprzętowy, dużo szybszy na Macu) |
+| Koder | *libx264* (najlepsza jakość) lub *VideoToolbox* (sprzętowy, dużo szybszy; tylko na Macu) |
 | Od → do | Zakres czasu w sekundach |
 | Dołącz dźwięk | Ścieżka AAC przycięta do zakresu |
 

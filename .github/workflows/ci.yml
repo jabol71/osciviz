@@ -7,7 +7,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -15,6 +19,7 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Biblioteki systemowe (Qt, OpenGL, PortAudio)
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y libegl1 libgl1 libxkbcommon0 libportaudio2 libsndfile1 xvfb
@@ -23,4 +28,10 @@ jobs:
       - name: Ruff
         run: ruff check .
       - name: Pytest (z OpenGL przez Xvfb)
+        if: runner.os == 'Linux'
         run: xvfb-run -a -s "-screen 0 1280x720x24" pytest
+      - name: Pytest (Windows, bez GPU — test renderowania jest pomijany)
+        if: runner.os == 'Windows'
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: pytest

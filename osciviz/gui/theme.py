@@ -15,6 +15,7 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QApplication
 
@@ -106,6 +107,12 @@ class ThemeManager:
         palette.setColor(QPalette.ToolTipText, QColor("#FFFFFF" if self.name != "high_contrast" else t["text"]))
         app.setPalette(palette)
         app.setStyleSheet(qss)
+        # Pasek tytułu okna rysuje system. Od Qt 6.8 można mu podpowiedzieć jasny
+        # lub ciemny schemat — dzięki temu na Windows 11 (i macOS) pasek pasuje do motywu.
+        hints = app.styleHints()
+        if hasattr(hints, "setColorScheme"):
+            dark = QColor(t["bg"]).lightness() < 128
+            hints.setColorScheme(Qt.ColorScheme.Dark if dark else Qt.ColorScheme.Light)
 
 
     def _chevron_file(self) -> str:

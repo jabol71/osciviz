@@ -1,4 +1,4 @@
-"""Generuje ikonę aplikacji (packaging/OsciViz.icns i icon.png) z logo SVG.
+"""Generuje ikony aplikacji (packaging/OsciViz.icns, OsciViz.ico i icon.png) z logo SVG.
 
 Uruchom: ``python packaging/make_icon.py``. Ikona to zaokrąglony kwadrat z gradientem
 i białą linią przebiegu — ten sam znak co w pasku górnym aplikacji.
@@ -37,7 +37,10 @@ def main() -> None:
     png = out / "icon.png"
     image.save(str(png))
     Image.open(png).save(out / "OsciViz.icns")
-    print("Zapisano", png, "i", out / "OsciViz.icns")
+    # Windows: plik .ico z kilkoma rozmiarami (Eksplorator wybiera najlepiej pasujący).
+    sizes = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
+    Image.open(png).save(out / "OsciViz.ico", sizes=sizes)
+    print("Zapisano", png, out / "OsciViz.icns", "i", out / "OsciViz.ico")
 
 
 if __name__ == "__main__":

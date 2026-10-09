@@ -23,6 +23,7 @@ from PySide6.QtWidgets import (
 )
 
 from osciviz.gui.icons import LAYER_ICONS, icon
+from osciviz.gui.keys import IS_MAC, with_keys
 from osciviz.gui.theme import theme
 from osciviz.gui.widgets import label, tool_button
 from osciviz.scene import commands as cmd
@@ -160,8 +161,8 @@ class LayerPanel(QFrame):
         self.add_btn.setToolTip(self.tr("Add layer"))
         self.up_btn.setToolTip(self.tr("Bring forward"))
         self.down_btn.setToolTip(self.tr("Send backward"))
-        self.dup_btn.setToolTip(self.tr("Duplicate (⌘D)"))
-        self.del_btn.setToolTip(self.tr("Delete (⌫)"))
+        self.dup_btn.setToolTip(with_keys(self.tr("Duplicate"), "Ctrl+D"))
+        self.del_btn.setToolTip(with_keys(self.tr("Delete"), "Backspace" if IS_MAC else "Del"))
         self.empty.setText(self.tr("No layers yet.\nUse + or the buttons at the top\nto add your first visual."))
         self.add_menu.clear()
         for type_name, cls in LAYER_TYPES.items():

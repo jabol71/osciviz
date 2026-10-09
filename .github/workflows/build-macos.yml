@@ -24,6 +24,8 @@ jobs:
         run: pip install -r requirements.txt pyinstaller
       - name: PyInstaller
         run: pyinstaller packaging/osciviz.spec --noconfirm
+      - name: Test uruchomienia paczki
+        run: QT_QPA_PLATFORM=offscreen dist/OsciViz.app/Contents/MacOS/OsciViz --self-test
       - name: Spakuj
         run: |
           cd dist

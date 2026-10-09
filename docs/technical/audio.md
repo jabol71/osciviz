@@ -8,7 +8,26 @@
 - `LiveSource` otwiera `sounddevice.InputStream` (stereo, częstotliwość urządzenia,
   `blocksize=512`). Callback **tylko kopiuje** blok do bufora kołowego (i ewentualnie do kolejki
   nagrywarki). W wątku audio nie wolno analizować, alokować ani logować — groziłoby to
-  przerwami w dźwięku.
+  przerwami w dźwięku. Wejście mono (np. mikrofon) jest zapisywane jako blok `(n, 1)` —
+  numpy sam rozkłada go na oba kanały bufora (broadcasting), więc callback nadal nic nie alokuje.
+- `LoopbackSource` (`core/loopback.py`, tylko Windows) przechwytuje dźwięk z wybranego
+  wyjścia przez **WASAPI loopback**. `sounddevice` tego nie udostępnia, więc używamy biblioteki
+  `PyAudioWPatch` (PyAudio z poprawką WASAPI, która dodaje urządzenia „[Loopback]”).
+  Callback zamienia bajty na widok `(n, kanały)` bez kopiowania, bierze dwa pierwsze kanały
+  (wyjścia 5.1/7.1 mają ich więcej) i zapisuje do tego samego bufora kołowego. Różnica:
+  gdy w systemie nic nie gra, WASAPI nie wysyła bloków wcale — dlatego po 0,15 s bez danych
+  `get_window` zwraca zera, zamiast „zamrożonej” ostatniej klatki.
+
+## Lista urządzeń
+
+`list_live_devices()` łączy dwie listy: najpierw loopback (Windows), potem zwykłe wejścia.
+Każda pozycja ma `kind` (`"loopback"` / `"input"`) i `index`, a `open_live_source(kind, index)`
+tworzy właściwe źródło — GUI nie musi wiedzieć, która to klasa.
+
+Na Windows PortAudio pokazuje każde urządzenie kilka razy (MME, DirectSound, WASAPI, WDM-KS),
+a MME obcina nazwy do 31 znaków. `select_input_devices()` zostawia więc tylko WASAPI. Ta
+funkcja jest czysta (dostaje listy z `sounddevice` jako argumenty), więc testy sprawdzają ją
+bez sprzętu. Wirtualne kable (BlackHole, VB-Cable) rozpoznajemy po nazwie i podświetlamy.
 
 ## Zegar i synchronizacja
 

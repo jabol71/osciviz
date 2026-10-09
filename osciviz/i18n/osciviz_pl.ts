@@ -71,7 +71,7 @@
 <context>
     <name>ColorButton</name>
     <message>
-        <location filename="../gui/widgets.py" line="165"/>
+        <location filename="../gui/widgets.py" line="167"/>
         <source>Choose color</source>
         <translation>Wybierz kolor</translation>
     </message>
@@ -251,163 +251,163 @@
 <context>
     <name>Inspector</name>
     <message>
-        <location filename="../gui/inspector.py" line="145"/>
+        <location filename="../gui/inspector.py" line="146"/>
         <source>Canvas</source>
         <translation>Płótno</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="146"/>
+        <location filename="../gui/inspector.py" line="147"/>
         <source>Nothing selected — project settings</source>
         <translation>Nic nie zaznaczono — ustawienia projektu</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="147"/>
+        <location filename="../gui/inspector.py" line="148"/>
         <source>Frame</source>
         <translation>Kadr</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="162"/>
+        <location filename="../gui/inspector.py" line="163"/>
         <source>Aspect ratio</source>
         <translation>Proporcje</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="172"/>
+        <location filename="../gui/inspector.py" line="173"/>
         <source>Background</source>
         <translation>Tło</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="175"/>
+        <location filename="../gui/inspector.py" line="176"/>
         <source>Grid &amp; guides</source>
         <translation>Siatka i prowadnice</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="179"/>
+        <location filename="../gui/inspector.py" line="180"/>
         <source>Show grid (G)</source>
         <translation>Pokaż siatkę (G)</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="183"/>
+        <location filename="../gui/inspector.py" line="184"/>
         <source>Snap to grid</source>
         <translation>Przyciągaj do siatki</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="187"/>
+        <location filename="../gui/inspector.py" line="188"/>
         <source>Rulers</source>
         <translation>Linijki</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="191"/>
+        <location filename="../gui/inspector.py" line="192"/>
         <source>Grid step</source>
         <translation>Krok siatki</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="194"/>
+        <location filename="../gui/inspector.py" line="195"/>
         <source>Export</source>
         <translation>Eksport</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="200"/>
+        <location filename="../gui/inspector.py" line="201"/>
         <source>Random seed</source>
         <translation>Ziarno losowości</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="201"/>
+        <location filename="../gui/inspector.py" line="202"/>
         <source>Particles use this seed, so exports are reproducible</source>
         <translation>Cząsteczki używają tego ziarna, więc eksporty są powtarzalne</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="204"/>
+        <location filename="../gui/inspector.py" line="205"/>
         <source>Tip: click a layer on the canvas to edit it. Drag on empty space to select several, scroll to zoom, hold Space or the middle button to pan.</source>
         <translation>Wskazówka: kliknij warstwę na płótnie, aby ją edytować. Przeciągnij po pustym miejscu, aby zaznaczyć kilka. Kółkiem przybliżasz, a Spacją lub środkowym przyciskiem przesuwasz widok.</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="240"/>
+        <location filename="../gui/inspector.py" line="241"/>
         <source>%1 layers</source>
         <translation>%1 warstw(y)</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="241"/>
+        <location filename="../gui/inspector.py" line="242"/>
         <source>Common properties</source>
         <translation>Wspólne właściwości</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="242"/>
-        <location filename="../gui/inspector.py" line="284"/>
+        <location filename="../gui/inspector.py" line="243"/>
+        <location filename="../gui/inspector.py" line="285"/>
         <source>Layer</source>
         <translation>Warstwa</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="254"/>
+        <location filename="../gui/inspector.py" line="255"/>
         <source>Opacity</source>
         <translation>Krycie</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="255"/>
+        <location filename="../gui/inspector.py" line="256"/>
         <source>Normal</source>
         <translation>Normalne</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="255"/>
+        <location filename="../gui/inspector.py" line="256"/>
         <source>Additive</source>
         <translation>Addytywne</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="258"/>
+        <location filename="../gui/inspector.py" line="259"/>
         <source>Blending</source>
         <translation>Mieszanie</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="273"/>
+        <location filename="../gui/inspector.py" line="274"/>
         <source>Presets…</source>
         <translation>Presety…</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="278"/>
+        <location filename="../gui/inspector.py" line="279"/>
         <source>Save as preset…</source>
         <translation>Zapisz jako preset…</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="310"/>
+        <location filename="../gui/inspector.py" line="311"/>
         <source>Transform</source>
         <translation>Transformacja</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="315"/>
+        <location filename="../gui/inspector.py" line="316"/>
         <source>W</source>
         <translation>Szer.</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="315"/>
+        <location filename="../gui/inspector.py" line="316"/>
         <source>H</source>
         <translation>Wys.</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="316"/>
+        <location filename="../gui/inspector.py" line="317"/>
         <source>Angle</source>
         <translation>Kąt</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="330"/>
+        <location filename="../gui/inspector.py" line="333"/>
         <source>Reset</source>
         <translation>Resetuj</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="394"/>
+        <location filename="../gui/inspector.py" line="402"/>
         <source>Use default image</source>
         <translation>Użyj domyślnego obrazu</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="398"/>
+        <location filename="../gui/inspector.py" line="406"/>
         <source>Choose image</source>
         <translation>Wybierz obraz</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="399"/>
+        <location filename="../gui/inspector.py" line="407"/>
         <source>Images (*.png *.jpg *.jpeg *.bmp *.webp *.tif *.tiff)</source>
         <translation>Obrazy (*.png *.jpg *.jpeg *.bmp *.webp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location filename="../gui/inspector.py" line="407"/>
+        <location filename="../gui/inspector.py" line="415"/>
         <source>Default (OSCIVIZ)</source>
         <translation>Domyślny</translation>
     </message>
@@ -415,47 +415,47 @@
 <context>
     <name>LayerPanel</name>
     <message>
-        <location filename="../gui/layer_panel.py" line="60"/>
+        <location filename="../gui/layer_panel.py" line="61"/>
         <source>Lock</source>
         <translation>Zablokuj</translation>
     </message>
     <message>
-        <location filename="../gui/layer_panel.py" line="65"/>
+        <location filename="../gui/layer_panel.py" line="66"/>
         <source>Show / hide</source>
         <translation>Pokaż / ukryj</translation>
     </message>
     <message>
-        <location filename="../gui/layer_panel.py" line="159"/>
+        <location filename="../gui/layer_panel.py" line="160"/>
         <source>Layers</source>
         <translation>Warstwy</translation>
     </message>
     <message>
-        <location filename="../gui/layer_panel.py" line="160"/>
+        <location filename="../gui/layer_panel.py" line="161"/>
         <source>Add layer</source>
         <translation>Dodaj warstwę</translation>
     </message>
     <message>
-        <location filename="../gui/layer_panel.py" line="161"/>
+        <location filename="../gui/layer_panel.py" line="162"/>
         <source>Bring forward</source>
         <translation>Przesuń wyżej</translation>
     </message>
     <message>
-        <location filename="../gui/layer_panel.py" line="162"/>
+        <location filename="../gui/layer_panel.py" line="163"/>
         <source>Send backward</source>
         <translation>Przesuń niżej</translation>
     </message>
     <message>
-        <location filename="../gui/layer_panel.py" line="163"/>
-        <source>Duplicate (⌘D)</source>
-        <translation>Duplikuj (⌘D)</translation>
-    </message>
-    <message>
         <location filename="../gui/layer_panel.py" line="164"/>
-        <source>Delete (⌫)</source>
-        <translation>Usuń (⌫)</translation>
+        <source>Duplicate</source>
+        <translation>Duplikuj</translation>
     </message>
     <message>
         <location filename="../gui/layer_panel.py" line="165"/>
+        <source>Delete</source>
+        <translation>Usuń</translation>
+    </message>
+    <message>
+        <location filename="../gui/layer_panel.py" line="166"/>
         <source>No layers yet.
 Use + or the buttons at the top
 to add your first visual.</source>
@@ -495,349 +495,311 @@ aby dodać pierwszą wizualizację.</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui/main_window.py" line="460"/>
+        <location filename="../gui/main_window.py" line="461"/>
         <source>New project</source>
         <translation>Nowy projekt</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="460"/>
+        <location filename="../gui/main_window.py" line="461"/>
         <source>Open project…</source>
         <translation>Otwórz projekt…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="460"/>
+        <location filename="../gui/main_window.py" line="461"/>
         <source>Save</source>
         <translation>Zapisz</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="461"/>
+        <location filename="../gui/main_window.py" line="462"/>
         <source>Save as…</source>
         <translation>Zapisz jako…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="461"/>
+        <location filename="../gui/main_window.py" line="462"/>
         <source>Import audio…</source>
         <translation>Importuj audio…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="462"/>
+        <location filename="../gui/main_window.py" line="463"/>
         <source>Import layer preset…</source>
         <translation>Importuj preset warstwy…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="462"/>
+        <location filename="../gui/main_window.py" line="463"/>
         <source>Export layer preset…</source>
         <translation>Eksportuj preset warstwy…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="463"/>
+        <location filename="../gui/main_window.py" line="464"/>
         <source>Export video (MP4)…</source>
         <translation>Eksportuj wideo (MP4)…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="463"/>
+        <location filename="../gui/main_window.py" line="464"/>
         <source>Export snapshot (PNG)…</source>
         <translation>Zrzut kadru (PNG)…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="464"/>
+        <location filename="../gui/main_window.py" line="465"/>
         <source>Load demo project</source>
         <translation>Wczytaj projekt demonstracyjny</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="464"/>
+        <location filename="../gui/main_window.py" line="465"/>
         <source>Quit</source>
         <translation>Zakończ</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="465"/>
-        <location filename="../gui/main_window.py" line="777"/>
-        <location filename="../gui/main_window.py" line="1046"/>
+        <location filename="../gui/main_window.py" line="466"/>
+        <location filename="../gui/main_window.py" line="776"/>
+        <location filename="../gui/main_window.py" line="1060"/>
         <source>Duplicate</source>
         <translation>Duplikuj</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="465"/>
-        <location filename="../gui/main_window.py" line="1046"/>
+        <location filename="../gui/main_window.py" line="466"/>
+        <location filename="../gui/main_window.py" line="1060"/>
         <source>Delete</source>
         <translation>Usuń</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="465"/>
+        <location filename="../gui/main_window.py" line="466"/>
         <source>Select all</source>
         <translation>Zaznacz wszystko</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="466"/>
+        <location filename="../gui/main_window.py" line="467"/>
         <source>Deselect</source>
         <translation>Odznacz</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="466"/>
+        <location filename="../gui/main_window.py" line="467"/>
         <source>Bring forward</source>
         <translation>Przesuń wyżej</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="466"/>
+        <location filename="../gui/main_window.py" line="467"/>
         <source>Send backward</source>
         <translation>Przesuń niżej</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="467"/>
+        <location filename="../gui/main_window.py" line="468"/>
         <source>Save layer as preset…</source>
         <translation>Zapisz warstwę jako preset…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="467"/>
+        <location filename="../gui/main_window.py" line="468"/>
         <source>Show grid</source>
         <translation>Pokaż siatkę</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="467"/>
-        <location filename="../gui/main_window.py" line="497"/>
+        <location filename="../gui/main_window.py" line="468"/>
+        <location filename="../gui/main_window.py" line="498"/>
         <source>Snap to grid</source>
         <translation>Przyciągaj do siatki</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="468"/>
+        <location filename="../gui/main_window.py" line="469"/>
         <source>Show rulers</source>
         <translation>Pokaż linijki</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="468"/>
+        <location filename="../gui/main_window.py" line="469"/>
+        <location filename="../gui/main_window.py" line="499"/>
         <source>Fit canvas</source>
         <translation>Dopasuj płótno</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="468"/>
+        <location filename="../gui/main_window.py" line="469"/>
         <source>Zoom in</source>
         <translation>Przybliż</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="469"/>
+        <location filename="../gui/main_window.py" line="470"/>
         <source>Zoom out</source>
         <translation>Oddal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="469"/>
-        <location filename="../gui/main_window.py" line="1044"/>
+        <location filename="../gui/main_window.py" line="470"/>
+        <location filename="../gui/main_window.py" line="1056"/>
         <source>Play / pause</source>
         <translation>Odtwórz / pauza</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="469"/>
+        <location filename="../gui/main_window.py" line="470"/>
         <source>Go to start</source>
         <translation>Na początek</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="470"/>
+        <location filename="../gui/main_window.py" line="471"/>
         <source>Settings…</source>
         <translation>Ustawienia…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="470"/>
+        <location filename="../gui/main_window.py" line="471"/>
         <source>User guide</source>
         <translation>Instrukcja obsługi</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="470"/>
-        <location filename="../gui/main_window.py" line="1057"/>
+        <location filename="../gui/main_window.py" line="471"/>
+        <location filename="../gui/main_window.py" line="1071"/>
         <source>Keyboard shortcuts</source>
         <translation>Skróty klawiszowe</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="471"/>
-        <location filename="../gui/main_window.py" line="1061"/>
+        <location filename="../gui/main_window.py" line="472"/>
+        <location filename="../gui/main_window.py" line="1075"/>
         <source>About OsciViz</source>
         <translation>O programie OsciViz</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="475"/>
+        <location filename="../gui/main_window.py" line="476"/>
+        <location filename="../gui/main_window.py" line="495"/>
         <source>Undo</source>
         <translation>Cofnij</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="476"/>
+        <location filename="../gui/main_window.py" line="477"/>
+        <location filename="../gui/main_window.py" line="496"/>
         <source>Redo</source>
         <translation>Ponów</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="479"/>
+        <location filename="../gui/main_window.py" line="480"/>
         <source>Add %1</source>
         <translation>Dodaj: %1</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="481"/>
+        <location filename="../gui/main_window.py" line="482"/>
         <source>Add %1 layer</source>
         <translation>Dodaj warstwę: %1</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="482"/>
+        <location filename="../gui/main_window.py" line="483"/>
         <source>Dark</source>
         <translation>Ciemny</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="482"/>
+        <location filename="../gui/main_window.py" line="483"/>
         <source>Light</source>
         <translation>Jasny</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="482"/>
+        <location filename="../gui/main_window.py" line="483"/>
         <source>High contrast</source>
         <translation>Wysoki kontrast</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="485"/>
+        <location filename="../gui/main_window.py" line="486"/>
         <source>File</source>
         <translation>Plik</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="486"/>
+        <location filename="../gui/main_window.py" line="487"/>
         <source>Open recent</source>
         <translation>Ostatnio otwierane</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="487"/>
+        <location filename="../gui/main_window.py" line="488"/>
         <source>Edit</source>
         <translation>Edycja</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="488"/>
+        <location filename="../gui/main_window.py" line="489"/>
         <source>Layer</source>
         <translation>Warstwa</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="489"/>
+        <location filename="../gui/main_window.py" line="490"/>
         <source>View</source>
         <translation>Widok</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="490"/>
+        <location filename="../gui/main_window.py" line="491"/>
         <source>Theme</source>
         <translation>Motyw</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="491"/>
+        <location filename="../gui/main_window.py" line="492"/>
         <source>Language</source>
         <translation>Język</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="492"/>
+        <location filename="../gui/main_window.py" line="493"/>
         <source>Playback</source>
         <translation>Odtwarzanie</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="493"/>
+        <location filename="../gui/main_window.py" line="494"/>
         <source>Help</source>
         <translation>Pomoc</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="494"/>
-        <source>Undo (⌘Z)</source>
-        <translation>Cofnij (⌘Z)</translation>
-    </message>
-    <message>
-        <location filename="../gui/main_window.py" line="495"/>
-        <source>Redo (⇧⌘Z)</source>
-        <translation>Ponów (⇧⌘Z)</translation>
-    </message>
-    <message>
-        <location filename="../gui/main_window.py" line="496"/>
+        <location filename="../gui/main_window.py" line="497"/>
         <source>Grid (G)</source>
         <translation>Siatka (G)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="498"/>
-        <source>Fit canvas (⌘0)</source>
-        <translation>Dopasuj płótno (⌘0)</translation>
-    </message>
-    <message>
-        <location filename="../gui/main_window.py" line="499"/>
-        <source>Snapshot PNG (⇧⌘S)</source>
-        <translation>Zrzut PNG (⇧⌘S)</translation>
-    </message>
-    <message>
-        <location filename="../gui/main_window.py" line="500"/>
+        <location filename="../gui/main_window.py" line="501"/>
         <source>Settings</source>
         <translation>Ustawienia</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="501"/>
+        <location filename="../gui/main_window.py" line="502"/>
         <source>Export</source>
         <translation>Eksport</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="502"/>
-        <source>Export video (⌘E)</source>
-        <translation>Eksportuj wideo (⌘E)</translation>
-    </message>
-    <message>
-        <location filename="../gui/main_window.py" line="503"/>
+        <location filename="../gui/main_window.py" line="504"/>
         <source>Ready</source>
         <translation>Gotowe</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="601"/>
+        <location filename="../gui/main_window.py" line="602"/>
         <source>Recording  %1</source>
         <translation>Nagrywanie  %1</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="633"/>
-        <source>Open an audio file first (⌘I)</source>
-        <translation>Najpierw otwórz plik audio (⌘I)</translation>
-    </message>
-    <message>
-        <location filename="../gui/main_window.py" line="647"/>
+        <location filename="../gui/main_window.py" line="648"/>
         <source>Import audio</source>
         <translation>Import audio</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="660"/>
+        <location filename="../gui/main_window.py" line="661"/>
         <source>Cannot open audio</source>
         <translation>Nie można otworzyć audio</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="661"/>
+        <location filename="../gui/main_window.py" line="662"/>
         <source>The file could not be read:
 %1</source>
         <translation>Nie udało się odczytać pliku:
 %1</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="681"/>
-        <location filename="../gui/main_window.py" line="709"/>
+        <location filename="../gui/main_window.py" line="682"/>
+        <location filename="../gui/main_window.py" line="708"/>
         <source>Live input — choose a device and press Start</source>
         <translation>Na żywo — wybierz urządzenie i naciśnij Start</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="692"/>
+        <location filename="../gui/main_window.py" line="693"/>
         <source>Cannot start live input</source>
         <translation>Nie można uruchomić wejścia na żywo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="693"/>
-        <source>Opening the input device failed:
-%1
-
-On macOS, allow microphone access for OsciViz in System Settings → Privacy &amp; Security → Microphone.</source>
-        <translation>Nie udało się otworzyć urządzenia wejściowego:
-%1
-
-Na macOS zezwól OsciViz na dostęp do mikrofonu w Ustawieniach systemowych → Prywatność i ochrona → Mikrofon.</translation>
-    </message>
-    <message>
-        <location filename="../gui/main_window.py" line="699"/>
-        <location filename="../gui/main_window.py" line="730"/>
+        <location filename="../gui/main_window.py" line="698"/>
+        <location filename="../gui/main_window.py" line="729"/>
         <source>Listening  ·  %1 Hz</source>
         <translation>Nasłuch  ·  %1 Hz</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="732"/>
+        <location filename="../gui/main_window.py" line="731"/>
         <source>Recording saved</source>
         <translation>Nagranie zapisane</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="733"/>
+        <location filename="../gui/main_window.py" line="732"/>
         <source>Saved %1 of audio to:
 %2
 
@@ -848,256 +810,285 @@ Use this recording as the project audio (for MP4 export)?</source>
 Użyć tego nagrania jako dźwięku projektu (do eksportu MP4)?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="801"/>
+        <location filename="../gui/main_window.py" line="800"/>
         <source>Preset “%1” applied</source>
         <translation>Zastosowano preset „%1”</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="807"/>
-        <location filename="../gui/main_window.py" line="813"/>
+        <location filename="../gui/main_window.py" line="806"/>
+        <location filename="../gui/main_window.py" line="812"/>
         <source>Save preset</source>
         <translation>Zapisz preset</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="807"/>
+        <location filename="../gui/main_window.py" line="806"/>
         <source>Preset name:</source>
         <translation>Nazwa presetu:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="816"/>
+        <location filename="../gui/main_window.py" line="815"/>
         <source>Preset saved</source>
         <translation>Zapisano preset</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="819"/>
+        <location filename="../gui/main_window.py" line="818"/>
         <source>Import layer preset</source>
         <translation>Import presetu warstwy</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="820"/>
-        <location filename="../gui/main_window.py" line="841"/>
+        <location filename="../gui/main_window.py" line="819"/>
+        <location filename="../gui/main_window.py" line="840"/>
         <source>Layer preset (*.json)</source>
         <translation>Preset warstwy (*.json)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="826"/>
+        <location filename="../gui/main_window.py" line="825"/>
         <source>Import preset</source>
         <translation>Import presetu</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="833"/>
+        <location filename="../gui/main_window.py" line="832"/>
         <source>Preset imported</source>
         <translation>Zaimportowano preset</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="840"/>
+        <location filename="../gui/main_window.py" line="839"/>
         <source>Export layer preset</source>
         <translation>Eksport presetu warstwy</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="844"/>
+        <location filename="../gui/main_window.py" line="843"/>
         <source>Preset exported</source>
         <translation>Wyeksportowano preset</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="857"/>
+        <location filename="../gui/main_window.py" line="859"/>
         <source>Untitled</source>
         <translation>Bez tytułu</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="869"/>
+        <location filename="../gui/main_window.py" line="871"/>
         <source>Save changes to this project?</source>
         <translation>Zapisać zmiany w projekcie?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="870"/>
+        <location filename="../gui/main_window.py" line="872"/>
         <source>Your changes will be lost if you don&apos;t save them.</source>
         <translation>Niezapisane zmiany zostaną utracone.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="901"/>
+        <location filename="../gui/main_window.py" line="903"/>
         <source>Open project</source>
         <translation>Otwórz projekt</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="902"/>
-        <location filename="../gui/main_window.py" line="944"/>
+        <location filename="../gui/main_window.py" line="904"/>
+        <location filename="../gui/main_window.py" line="946"/>
         <source>OsciViz project (*.osv)</source>
         <translation>Projekt OsciViz (*.osv)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="912"/>
+        <location filename="../gui/main_window.py" line="914"/>
         <source>Cannot open project</source>
         <translation>Nie można otworzyć projektu</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="923"/>
+        <location filename="../gui/main_window.py" line="925"/>
         <source>Opened %1</source>
         <translation>Otwarto %1</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="932"/>
+        <location filename="../gui/main_window.py" line="934"/>
         <source>Cannot save project</source>
         <translation>Nie można zapisać projektu</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="938"/>
+        <location filename="../gui/main_window.py" line="940"/>
         <source>Saved</source>
         <translation>Zapisano</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="943"/>
+        <location filename="../gui/main_window.py" line="945"/>
         <source>Save project</source>
         <translation>Zapisz projekt</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="980"/>
+        <location filename="../gui/main_window.py" line="982"/>
         <source>No recent projects</source>
         <translation>Brak ostatnich projektów</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1002"/>
+        <location filename="../gui/main_window.py" line="1004"/>
         <source>Export snapshot</source>
         <translation>Zrzut PNG</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1003"/>
+        <location filename="../gui/main_window.py" line="1005"/>
         <source>PNG image (*.png)</source>
         <translation>Obraz PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1016"/>
+        <location filename="../gui/main_window.py" line="1018"/>
         <source>Snapshot saved · %1 × %2</source>
         <translation>Zapisano zrzut · %1 × %2</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1021"/>
-        <location filename="../gui/main_window.py" line="1027"/>
+        <location filename="../gui/main_window.py" line="503"/>
+        <location filename="../gui/main_window.py" line="1023"/>
+        <location filename="../gui/main_window.py" line="1029"/>
         <source>Export video</source>
         <translation>Eksport wideo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1022"/>
+        <location filename="../gui/main_window.py" line="1024"/>
         <source>Stop the recording first, then export it as a file.</source>
         <translation>Najpierw zatrzymaj nagrywanie, a potem wyeksportuj je jako plik.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1028"/>
+        <location filename="../gui/main_window.py" line="1030"/>
         <source>No audio is loaded. Export a silent video of length (seconds):</source>
         <translation>Nie wczytano dźwięku. Wyeksportować ciche wideo o długości (sekundy):</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1044"/>
+        <location filename="../gui/main_window.py" line="1057"/>
         <source>Undo / redo</source>
         <translation>Cofnij / ponów</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1045"/>
+        <location filename="../gui/main_window.py" line="1058"/>
         <source>Save · open · new</source>
         <translation>Zapisz · otwórz · nowy</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1045"/>
+        <location filename="../gui/main_window.py" line="1059"/>
         <source>Export MP4</source>
         <translation>Eksport MP4</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1046"/>
+        <location filename="../gui/main_window.py" line="500"/>
+        <location filename="../gui/main_window.py" line="1059"/>
         <source>Snapshot PNG</source>
         <translation>Zrzut PNG</translation>
     </message>
     <message>
+        <location filename="../gui/main_window.py" line="634"/>
+        <source>Open an audio file first</source>
+        <translation>Najpierw otwórz plik audio</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="694"/>
+        <source>Opening the input device failed:
+%1</source>
+        <translation>Nie udało się otworzyć urządzenia wejściowego:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="1044"/>
+        <source>On macOS, allow microphone access for OsciViz in System Settings → Privacy &amp; Security → Microphone.</source>
+        <translation>Na macOS zezwól OsciViz na dostęp do mikrofonu w Ustawieniach systemowych → Prywatność i ochrona → Mikrofon.</translation>
+    </message>
+    <message>
         <location filename="../gui/main_window.py" line="1047"/>
+        <source>On Windows, check Settings → Privacy &amp; security → Microphone and turn on “Let desktop apps access your microphone”.</source>
+        <translation>Na Windows otwórz Ustawienia → Prywatność i zabezpieczenia → Mikrofon i włącz „Zezwalaj aplikacjom klasycznym na dostęp do mikrofonu”.</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="1049"/>
+        <source>Check that the device is connected and not used by another program.</source>
+        <translation>Sprawdź, czy urządzenie jest podłączone i nie używa go inny program.</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="1061"/>
         <source>Move (Shift: large step)</source>
         <translation>Przesuń (Shift: duży krok)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1047"/>
+        <location filename="../gui/main_window.py" line="1061"/>
         <source>Rotate +5° / −5°</source>
         <translation>Obróć +5° / −5°</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1048"/>
+        <location filename="../gui/main_window.py" line="1062"/>
         <source>Scale</source>
         <translation>Skalowanie</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1048"/>
+        <location filename="../gui/main_window.py" line="1062"/>
         <source>Toggle grid</source>
         <translation>Pokaż/ukryj siatkę</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1048"/>
+        <location filename="../gui/main_window.py" line="1062"/>
         <source>Next layer</source>
         <translation>Następna warstwa</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1049"/>
+        <location filename="../gui/main_window.py" line="1063"/>
         <source>Scroll / pinch</source>
         <translation>Kółko / szczypanie</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1049"/>
+        <location filename="../gui/main_window.py" line="1063"/>
         <source>Zoom view</source>
         <translation>Przybliż/oddal widok</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1050"/>
+        <location filename="../gui/main_window.py" line="1064"/>
         <source>Space + drag / middle button</source>
         <translation>Spacja + przeciąganie / środkowy przycisk</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1050"/>
+        <location filename="../gui/main_window.py" line="1064"/>
         <source>Pan view</source>
         <translation>Przesuń widok</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1051"/>
+        <location filename="../gui/main_window.py" line="1065"/>
         <source>Shift + handle</source>
         <translation>Shift + uchwyt</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1051"/>
+        <location filename="../gui/main_window.py" line="1065"/>
         <source>Keep proportions</source>
         <translation>Zachowaj proporcje</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1052"/>
+        <location filename="../gui/main_window.py" line="1066"/>
         <source>Alt + handle</source>
         <translation>Alt + uchwyt</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1052"/>
+        <location filename="../gui/main_window.py" line="1066"/>
         <source>Scale from center</source>
         <translation>Skaluj od środka</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1053"/>
-        <source>⌘ + rotate handle</source>
-        <translation>⌘ + uchwyt obrotu</translation>
-    </message>
-    <message>
-        <location filename="../gui/main_window.py" line="1053"/>
+        <location filename="../gui/main_window.py" line="1067"/>
         <source>Snap to 15°</source>
         <translation>Przyciągaj co 15°</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1063"/>
+        <location filename="../gui/main_window.py" line="1067"/>
+        <source>%1 + rotate handle</source>
+        <translation>%1 + uchwyt obrotu</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="1077"/>
         <source>A software oscilloscope and audio visualizer. Build layered visuals from waveforms, XY scopes, spectra and particle images, then export them to MP4.</source>
         <translation>Programowy oscyloskop i wizualizator dźwięku. Twórz wielowarstwowe wizualizacje z przebiegów, oscyloskopu XY, widma i obrazów z cząsteczek, a potem eksportuj je do MP4.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1065"/>
+        <location filename="../gui/main_window.py" line="1079"/>
         <source>Course project — Computer Graphics and GUI.</source>
         <translation>Projekt zaliczeniowy — Grafika Komputerowa i GUI.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1068"/>
+        <location filename="../gui/main_window.py" line="1082"/>
         <source>OpenGL error</source>
         <translation>Błąd OpenGL</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1069"/>
+        <location filename="../gui/main_window.py" line="1083"/>
         <source>Could not initialise OpenGL 4.1:
 %1</source>
         <translation>Nie udało się zainicjować OpenGL 4.1:
@@ -1406,43 +1397,43 @@ Użyć tego nagrania jako dźwięku projektu (do eksportu MP4)?</translation>
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="../gui/settings_dialog.py" line="60"/>
-        <location filename="../gui/settings_dialog.py" line="64"/>
+        <location filename="../gui/settings_dialog.py" line="57"/>
+        <location filename="../gui/settings_dialog.py" line="61"/>
         <source>Settings</source>
         <translation>Ustawienia</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="65"/>
+        <location filename="../gui/settings_dialog.py" line="62"/>
         <source>Appearance</source>
         <translation>Wygląd</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="71"/>
+        <location filename="../gui/settings_dialog.py" line="68"/>
         <source>Dark</source>
         <translation>Ciemny</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="71"/>
+        <location filename="../gui/settings_dialog.py" line="68"/>
         <source>Light</source>
         <translation>Jasny</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="72"/>
+        <location filename="../gui/settings_dialog.py" line="69"/>
         <source>High contrast</source>
         <translation>Wysoki kontrast</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="80"/>
+        <location filename="../gui/settings_dialog.py" line="77"/>
         <source>Language</source>
         <translation>Język</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="84"/>
+        <location filename="../gui/settings_dialog.py" line="81"/>
         <source>Interface</source>
         <translation>Interfejs</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="87"/>
+        <location filename="../gui/settings_dialog.py" line="84"/>
         <source>Done</source>
         <translation>Gotowe</translation>
     </message>
@@ -1450,82 +1441,107 @@ Użyć tego nagrania jako dźwięku projektu (do eksportu MP4)?</translation>
 <context>
     <name>SourcePanel</name>
     <message>
-        <location filename="../gui/source_panel.py" line="115"/>
+        <location filename="../gui/source_panel.py" line="117"/>
         <source>Audio source</source>
         <translation>Źródło dźwięku</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="116"/>
+        <location filename="../gui/source_panel.py" line="118"/>
         <source>LIVE</source>
         <translation>NA ŻYWO</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="117"/>
+        <location filename="../gui/source_panel.py" line="119"/>
         <source>File</source>
         <translation>Plik</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="118"/>
+        <location filename="../gui/source_panel.py" line="120"/>
         <source>Live input</source>
         <translation>Na żywo</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="119"/>
-        <source>Open audio file… (⌘I)</source>
-        <translation>Otwórz plik audio… (⌘I)</translation>
+        <location filename="../gui/source_panel.py" line="121"/>
+        <source>Open audio file…</source>
+        <translation>Otwórz plik audio…</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="120"/>
+        <location filename="../gui/source_panel.py" line="122"/>
         <source>Refresh device list</source>
         <translation>Odśwież listę urządzeń</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="122"/>
+        <location filename="../gui/source_panel.py" line="124"/>
         <source>● REC</source>
         <translation>● REC</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="123"/>
+        <location filename="../gui/source_panel.py" line="125"/>
         <source>Record the live session to a WAV file</source>
         <translation>Nagraj sesję na żywo do pliku WAV</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="129"/>
+        <location filename="../gui/source_panel.py" line="131"/>
         <source>Stop listening</source>
         <translation>Zatrzymaj nasłuch</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="130"/>
+        <location filename="../gui/source_panel.py" line="132"/>
         <source>Start listening</source>
         <translation>Rozpocznij nasłuch</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="137"/>
+        <location filename="../gui/source_panel.py" line="139"/>
         <source>No audio loaded</source>
         <translation>Brak wczytanego dźwięku</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="138"/>
+        <location filename="../gui/source_panel.py" line="140"/>
         <source>WAV, FLAC, MP3, OGG, AIFF</source>
         <translation>WAV, FLAC, MP3, OGG, AIFF</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="169"/>
+        <location filename="../gui/source_panel.py" line="168"/>
+        <source>System sound: %1</source>
+        <translation>Dźwięk systemu: %1</translation>
+    </message>
+    <message>
+        <location filename="../gui/source_panel.py" line="186"/>
+        <source>“System sound” captures everything playing on the chosen speakers. Play something in FL Studio and press Start.</source>
+        <translation>„Dźwięk systemu” przechwytuje wszystko, co gra na wybranych głośnikach. Włącz odtwarzanie w FL Studio i naciśnij Start.</translation>
+    </message>
+    <message>
+        <location filename="../gui/source_panel.py" line="189"/>
+        <source>VB-Cable detected: choose “CABLE Output” if FL Studio plays into CABLE Input.</source>
+        <translation>Wykryto VB-Cable: wybierz „CABLE Output”, jeśli FL Studio gra na CABLE Input.</translation>
+    </message>
+    <message>
+        <location filename="../gui/source_panel.py" line="193"/>
+        <source>VB-Cable detected — set FL Studio&apos;s output to CABLE Input and press Start.</source>
+        <translation>Wykryto VB-Cable — ustaw wyjście FL Studio na CABLE Input i naciśnij Start.</translation>
+    </message>
+    <message>
+        <location filename="../gui/source_panel.py" line="194"/>
         <source>BlackHole detected — set FL Studio&apos;s output to your Multi-Output Device and press Start.</source>
         <translation>Wykryto BlackHole — ustaw wyjście FL Studio na urządzenie wielowyjściowe (Multi-Output Device) i naciśnij Start.</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="172"/>
+        <location filename="../gui/source_panel.py" line="197"/>
         <source>Audio input is unavailable on this system (PortAudio missing).</source>
         <translation>Wejście audio jest niedostępne w tym systemie (brak PortAudio).</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="174"/>
+        <location filename="../gui/source_panel.py" line="199"/>
         <source>No input devices found.</source>
         <translation>Nie znaleziono urządzeń wejściowych.</translation>
     </message>
     <message>
-        <location filename="../gui/source_panel.py" line="176"/>
+        <location filename="../gui/source_panel.py" line="201"/>
+        <source>To capture FL Studio, install VB-Cable — &lt;a href=&quot;%1&quot;&gt;setup guide&lt;/a&gt;.</source>
+        <translation>Aby przechwytywać FL Studio, zainstaluj VB-Cable — &lt;a href=&quot;%1&quot;&gt;instrukcja konfiguracji&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <location filename="../gui/source_panel.py" line="203"/>
         <source>BlackHole not found. To capture FL Studio, install BlackHole 2ch — &lt;a href=&quot;%1&quot;&gt;setup guide&lt;/a&gt;.</source>
         <translation>Nie znaleziono BlackHole. Aby przechwytywać FL Studio, zainstaluj BlackHole 2ch — &lt;a href=&quot;%1&quot;&gt;instrukcja konfiguracji&lt;/a&gt;.</translation>
     </message>

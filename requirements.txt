@@ -1,4 +1,4 @@
-PySide6>=6.6
+PySide6>=6.6,<6.12  # 6.12.0: pola liczbowe ze stylami są puste (tests/test_widgets.py)
 moderngl>=5.10
 numpy>=1.26
 soundfile>=0.12
@@ -6,3 +6,4 @@ sounddevice>=0.4.6
 opencv-python>=4.8
 Pillow>=10.0
 imageio-ffmpeg>=0.4.9
+PyAudioWPatch>=0.2.12; sys_platform == "win32"

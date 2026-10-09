@@ -1,4 +1,4 @@
-# Budowanie, testy i paczka .app
+# Budowanie, testy i paczki (.app, .exe)
 
 ## Środowisko deweloperskie
 
@@ -18,6 +18,9 @@ mkdocs serve               # podgląd dokumentacji na http://127.0.0.1:8000
 | `test_transform.py` | złożenie i odwrotność macierzy, hit test po obrocie i skali |
 | `test_analysis.py` | sinus 60 Hz → maksimum w basie, 5 kHz → w wysokich; skala amplitudy; obwiednia |
 | `test_ring_buffer.py` | zawijanie, kolejność, dopełnianie zerami, blok większy niż bufor |
+| `test_devices.py` | Windows: tylko urządzenia WASAPI; wykrywanie BlackHole i VB-Cable |
+| `test_widgets.py` | pole liczbowe z motywem ma edytowalne pole tekstowe (błąd Qt 6.12.0) |
+| `test_loopback.py` | loopback: dwa pierwsze kanały z 5.1, mono → stereo, cisza po przerwie |
 | `test_image_to_points.py` | liczba punktów, zakres współrzędnych, kolory z obrazu, wszystkie metody |
 | `test_particles.py` | bez basu cząsteczki wracają do spoczynku; stabilność przy dużym kroku |
 | `test_project_io.py` | zapis → odczyt daje identyczną scenę; uszkodzony plik; migracja v1 |
@@ -39,6 +42,51 @@ pozwoli czytać BlackHole), dołącza shadery, motywy, tłumaczenia i presety. I
 Workflow **Build macOS app** (GitHub Actions) buduje paczkę na runnerze macOS i udostępnia
 ją jako artefakty `OsciViz-macOS-arm64.zip` i `OsciViz-macOS-x86_64.zip` (oraz w wydaniu, gdy
 wypchniesz tag `v*`) — można je pobrać bez instalowania Pythona.
+
+## Paczka Windows (PyInstaller + Inno Setup)
+
+Ta sama specyfikacja na Windows buduje folder `dist\OsciViz\` z `OsciViz.exe` (ikona
+`packaging/OsciViz.ico`, okno bez konsoli):
+
+```powershell
+pip install pyinstaller
+pyinstaller packaging/osciviz.spec --noconfirm
+dist\OsciViz\OsciViz.exe
+```
+
+Instalator buduje [Inno Setup 6](https://jrsoftware.org/isinfo.php) ze skryptu
+`packaging/osciviz.iss`: `iscc /DAppVersion=1.0.0 packaging\osciviz.iss` →
+`dist\OsciViz-Windows-x64-setup.exe`. Instaluje „na użytkownika” (bez uprawnień
+administratora), dodaje skrót w menu Start i kojarzy pliki `.osv`.
+
+Workflow **Build Windows app** robi to wszystko na runnerze `windows-latest` i publikuje
+`OsciViz-Windows-x64.zip` (wersja przenośna) oraz `OsciViz-Windows-x64-setup.exe`.
+Po spakowaniu oba workflowy uruchamiają `OsciViz --self-test`, który sprawdza, czy paczka
+zawiera shadery, motywy, tłumaczenia i presety.
+
+## Różnice między platformami
+
+Kod jest wspólny; różnice są zebrane w kilku miejscach:
+
+| Co | Gdzie | macOS | Windows |
+|---|---|---|---|
+| Zapis skrótów w podpowiedziach | `gui/keys.py` | ⌘Z, ⇧⌘S | Ctrl+Z, Ctrl+Shift+S |
+| Czcionka interfejsu | `app.py` | systemowa (SF) | Segoe UI Variable / Segoe UI |
+| Ustawienia, wyjście | `gui/main_window.py` | ⌘, i ⌘Q (standard Qt) | Ctrl+, i Ctrl+Q |
+| Koder sprzętowy | `gui/export_dialog.py` | VideoToolbox | — (tylko libx264) |
+| Przechwytywanie na żywo | `core/audio_source.py`, `core/loopback.py` | BlackHole (wejście) | dźwięk systemu (WASAPI loopback) albo VB-Cable |
+| Uprawnienie mikrofonu | `Info.plist` / komunikat w GUI | System Settings | Ustawienia → Prywatność |
+
+Qt sam mapuje `Ctrl` w `QKeySequence` na klawisz Command na macOS, więc skróty definiujemy
+raz, w zapisie „Ctrl+…”.
+
+## Wersja PySide6
+
+`requirements.txt` ogranicza PySide6 do `<6.12`. W Qt 6.12.0 pola liczbowe bez strzałek
+(`NoButtons`), którym arkusz stylów ustawia ramkę lub odstępy, dostają pole tekstowe
+szerokości 1 px: wartość jest niewidoczna i nie da się nic wpisać (zgłoszone przy pierwszym
+teście na Windows). `tests/test_widgets.py` sprawdza to dla każdego motywu, więc po
+podniesieniu limitu wersji CI od razu pokaże, czy błąd został naprawiony w Qt.
 
 ## Profilowanie
 

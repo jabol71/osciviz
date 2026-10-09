@@ -5,7 +5,7 @@ Preset to typ warstwy + jej parametry (bez transformacji), np.::
     {"type": "waveform", "name": "Neon", "params": {"color": "#FF2BD6", ...}}
 
 Wbudowane presety leżą w ``osciviz/resources/presets``. Presety użytkownika
-zapisujemy w katalogu danych aplikacji (na macOS
+zapisujemy w katalogu danych aplikacji (np. na macOS
 ``~/Library/Application Support/OsciViz/presets``).
 """
 

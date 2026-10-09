@@ -29,15 +29,15 @@
 | Przeciąganie po pustym | Zaznaczanie prostokątem |
 | Przeciąganie warstwy | Przesuń (Shift — tylko w jednej osi) |
 | Uchwyty narożne / boczne | Skaluj (Shift — zachowaj proporcje, Alt — od środka) |
-| Okrągły uchwyt nad warstwą | Obróć (⌘ — co 15°) |
+| Okrągły uchwyt nad warstwą | Obróć (⌘ lub Ctrl — co 15°) |
 | Kółko / szczypanie gładzika | Zoom względem kursora |
 | Dwa palce na gładziku, środkowy przycisk, Spacja + przeciąganie | Przesuń widok |
 | Prawy przycisk | Menu: duplikuj, usuń, wyżej/niżej, reset, presety |
 | Dwuklik na pustym | Dopasuj kadr do okna |
 
-Każdą zmianę można cofnąć (⌘Z) — także przeciąganie suwaka czy uchwytu, które cofa się jako jeden krok.
+Każdą zmianę można cofnąć (⌘Z / Ctrl+Z) — także przeciąganie suwaka czy uchwytu, które cofa się jako jeden krok.
 
 ## Ustawienia
 
-Ikona koła zębatego (⌘,) otwiera ustawienia: **motyw** (ciemny, jasny, wysoki kontrast)
+Ikona koła zębatego (⌘, / Ctrl+,) otwiera ustawienia: **motyw** (ciemny, jasny, wysoki kontrast)
 i **język** (polski, angielski). Zmiana działa od razu, bez restartu, i jest zapamiętywana.
