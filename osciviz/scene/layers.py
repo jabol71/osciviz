@@ -27,12 +27,15 @@ from osciviz.scene.transform import Transform
 
 BLEND_MODES = ("normal", "additive")
 
-# Parametry poświaty wspólne dla warstw liniowych.
-GLOW_PARAMS = [
-    ParamSpec("glow", "float", 0.6, QT_TRANSLATE_NOOP("Params", "Glow strength"), 0.0, 3.0, 0.05, group=GROUP_GLOW),
-    ParamSpec("glow_radius", "float", 14.0, QT_TRANSLATE_NOOP("Params", "Glow radius"), 1.0, 60.0, 0.5,
-              group=GROUP_GLOW, suffix=" px"),
-]
+
+def glow_params(strength: float, radius: float) -> list[ParamSpec]:
+    """Parametry poświaty wspólne dla wszystkich warstw (różnią się tylko wartościami domyślnymi)."""
+    return [
+        ParamSpec("glow", "float", strength, QT_TRANSLATE_NOOP("Params", "Glow strength"), 0.0, 3.0, 0.05,
+                  group=GROUP_GLOW),
+        ParamSpec("glow_radius", "float", radius, QT_TRANSLATE_NOOP("Params", "Glow radius"), 1.0, 60.0, 0.5,
+                  group=GROUP_GLOW, suffix=" px"),
+    ]
 
 
 def new_id() -> str:
@@ -63,13 +66,7 @@ class Layer:
     # --- parametry -----------------------------------------------------------
     @classmethod
     def spec(cls, key: str) -> ParamSpec | None:
-        for p in cls.PARAMS:
-            if p.key == key:
-                return p
-        return None
-
-    def get(self, key: str):
-        return self.params.get(key, self.spec(key).default if self.spec(key) else None)
+        return next((p for p in cls.PARAMS if p.key == key), None)
 
     # --- serializacja --------------------------------------------------------
     def to_dict(self) -> dict:
@@ -136,7 +133,7 @@ class WaveformLayer(Layer):
                   group=GROUP_SIGNAL, suffix=" ms"),
         ParamSpec("gain", "float", 1.5, QT_TRANSLATE_NOOP("Params", "Gain"), 0.1, 10.0, 0.1, group=GROUP_SIGNAL),
         ParamSpec("stabilize", "bool", True, QT_TRANSLATE_NOOP("Params", "Trigger (stabilize)"), group=GROUP_SIGNAL),
-        *GLOW_PARAMS,
+        *glow_params(0.6, 14.0),
     ]
 
     def half_extent(self):
@@ -156,7 +153,7 @@ class XYLayer(Layer):
                   group=GROUP_SIGNAL, suffix=" ms"),
         ParamSpec("gain", "float", 1.2, QT_TRANSLATE_NOOP("Params", "Gain"), 0.1, 10.0, 0.1, group=GROUP_SIGNAL),
         ParamSpec("rotate45", "bool", False, QT_TRANSLATE_NOOP("Params", "Mid/side (rotate 45°)"), group=GROUP_SIGNAL),
-        *GLOW_PARAMS,
+        *glow_params(0.6, 14.0),
     ]
 
     def half_extent(self):
@@ -188,7 +185,7 @@ class SpectrumLayer(Layer):
         ParamSpec("gain", "float", 1.2, QT_TRANSLATE_NOOP("Params", "Gain"), 0.1, 5.0, 0.05, group=GROUP_SIGNAL),
         ParamSpec("floor", "float", 0.35, QT_TRANSLATE_NOOP("Params", "Noise floor"), 0.0, 0.9, 0.01,
                   group=GROUP_SIGNAL),
-        *GLOW_PARAMS,
+        *glow_params(0.6, 14.0),
     ]
 
     def half_extent(self):
@@ -229,9 +226,7 @@ class ParticleLayer(Layer):
         ParamSpec("stiffness", "float", 40.0, QT_TRANSLATE_NOOP("Params", "Spring stiffness"), 1.0, 200.0, 0.5,
                   group=GROUP_PHYSICS),
         ParamSpec("damping", "float", 6.0, QT_TRANSLATE_NOOP("Params", "Damping"), 0.0, 40.0, 0.1, group=GROUP_PHYSICS),
-        ParamSpec("glow", "float", 0.0, QT_TRANSLATE_NOOP("Params", "Glow strength"), 0.0, 3.0, 0.05, group=GROUP_GLOW),
-        ParamSpec("glow_radius", "float", 10.0, QT_TRANSLATE_NOOP("Params", "Glow radius"), 1.0, 60.0, 0.5,
-                  group=GROUP_GLOW, suffix=" px"),
+        *glow_params(0.0, 10.0),
     ]
 
     def __init__(self, name=None, transform=None) -> None:

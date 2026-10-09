@@ -38,6 +38,7 @@ from PySide6.QtWidgets import (
     QInputDialog,
     QLabel,
     QMainWindow,
+    QMenu,
     QMessageBox,
     QPushButton,
     QToolButton,
@@ -400,62 +401,30 @@ class MainWindow(QMainWindow):
             act.triggered.connect(lambda _=False, c=code: self.set_language(c))
             self.lang_group.addAction(act)
 
+    def _menu(self, keys: str, menu: QMenu | None = None) -> QMenu:
+        """Nowe menu (lub dopisanie do ``menu``) z akcji o podanych nazwach; ``|`` to separator."""
+        menu = menu or self.menuBar().addMenu("")
+        for key in keys.split():
+            if key == "|":
+                menu.addSeparator()
+            else:
+                menu.addAction(self.actions_by_name[key])
+        return menu
+
     def _build_menus(self) -> None:
-        mb = self.menuBar()
-        n = self.actions_by_name
-        self.menu_file = mb.addMenu("")
-        for key in ("new", "open"):
-            self.menu_file.addAction(n[key])
+        self.menu_file = self._menu("new open")
         self.menu_recent = self.menu_file.addMenu("")
-        self.menu_file.addSeparator()
-        for key in ("save", "save_as"):
-            self.menu_file.addAction(n[key])
-        self.menu_file.addSeparator()
-        for key in ("import_audio", "import_preset", "demo"):
-            self.menu_file.addAction(n[key])
-        self.menu_file.addSeparator()
-        for key in ("export_mp4", "export_png", "export_preset"):
-            self.menu_file.addAction(n[key])
-        self.menu_file.addSeparator()
-        self.menu_file.addAction(n["settings"])
-        self.menu_file.addAction(n["quit"])
-
-        self.menu_edit = mb.addMenu("")
-        for key in ("undo", "redo"):
-            self.menu_edit.addAction(n[key])
-        self.menu_edit.addSeparator()
-        for key in ("duplicate", "delete"):
-            self.menu_edit.addAction(n[key])
-        self.menu_edit.addSeparator()
-        for key in ("select_all", "deselect"):
-            self.menu_edit.addAction(n[key])
-
-        self.menu_layer = mb.addMenu("")
-        for type_name in LAYER_TYPES:
-            self.menu_layer.addAction(n[f"add_{type_name}"])
-        self.menu_layer.addSeparator()
-        for key in ("raise", "lower", "save_preset"):
-            self.menu_layer.addAction(n[key])
-
-        self.menu_view = mb.addMenu("")
-        for key in ("grid", "snap", "rulers"):
-            self.menu_view.addAction(n[key])
-        self.menu_view.addSeparator()
-        for key in ("fit", "zoom_in", "zoom_out"):
-            self.menu_view.addAction(n[key])
-        self.menu_view.addSeparator()
+        self._menu("| save save_as | import_audio import_preset demo | export_mp4 export_png export_preset "
+                   "| settings quit", self.menu_file)
+        self.menu_edit = self._menu("undo redo | duplicate delete | select_all deselect")
+        self.menu_layer = self._menu(" ".join(f"add_{t}" for t in LAYER_TYPES) + " | raise lower save_preset")
+        self.menu_view = self._menu("grid snap rulers | fit zoom_in zoom_out |")
         self.menu_theme = self.menu_view.addMenu("")
         self.menu_theme.addActions(self.theme_group.actions())
         self.menu_lang = self.menu_view.addMenu("")
         self.menu_lang.addActions(self.lang_group.actions())
-
-        self.menu_play = mb.addMenu("")
-        for key in ("play", "rewind"):
-            self.menu_play.addAction(n[key])
-
-        self.menu_help = mb.addMenu("")
-        for key in ("guide", "shortcuts", "about"):
-            self.menu_help.addAction(n[key])
+        self.menu_play = self._menu("play rewind")
+        self.menu_help = self._menu("guide shortcuts about")
 
     def retranslate(self) -> None:
         texts = {

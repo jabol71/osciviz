@@ -23,6 +23,45 @@ MERGE_PARAM = 1002
 MERGE_PROP = 1003
 
 
+class ValueCommand(QUndoCommand):
+    """Baza komend „stan przed → stan po”.
+
+    Podklasa ustawia ``self.old`` i ``self.new`` i definiuje ``_set(value)``;
+    ``redo``/``undo`` to wtedy ``_set(new)``/``_set(old)``. Komendy z tym
+    samym ``MERGE_ID``, gestem i ``merge_key()`` łączą się w jeden krok.
+    """
+
+    MERGE_ID = -1  # -1: bez łączenia (wartość domyślna Qt)
+
+    def __init__(self, scene: Scene, text: str, gesture: object = None) -> None:
+        super().__init__(text)
+        self.scene = scene
+        self.gesture = gesture  # identyfikator gestu; ten sam = łączenie w jeden krok
+
+    def id(self) -> int:
+        return self.MERGE_ID
+
+    def merge_key(self):
+        """Co musi się zgadzać, żeby dwie komendy jednego gestu się połączyły."""
+        return None
+
+    def mergeWith(self, other: QUndoCommand) -> bool:
+        if (type(other) is not type(self) or self.gesture is None
+                or other.gesture != self.gesture or other.merge_key() != self.merge_key()):
+            return False
+        self.new = other.new
+        return True
+
+    def _set(self, value) -> None:
+        raise NotImplementedError
+
+    def redo(self) -> None:
+        self._set(self.new)
+
+    def undo(self) -> None:
+        self._set(self.old)
+
+
 class AddLayersCommand(QUndoCommand):
     def __init__(self, scene: Scene, layers: list[Layer], index: int | None = None,
                  text: str | None = None) -> None:
@@ -65,21 +104,17 @@ class RemoveLayersCommand(QUndoCommand):
         self.scene.set_selection(self.prev_selection)
 
 
-class MoveLayerCommand(QUndoCommand):
+class MoveLayerCommand(ValueCommand):
     """Zmiana kolejności rysowania (w górę/w dół, przeciąganie w panelu)."""
 
     def __init__(self, scene: Scene, layer_id: str, new_index: int) -> None:
-        super().__init__(QCoreApplication.translate("Commands", "Reorder layers"))
-        self.scene = scene
+        super().__init__(scene, QCoreApplication.translate("Commands", "Reorder layers"))
         self.layer_id = layer_id
-        self.old_index = scene.index_of(layer_id)
-        self.new_index = new_index
+        self.old = scene.index_of(layer_id)
+        self.new = new_index
 
-    def redo(self) -> None:
-        self.scene.move_layer(self.layer_id, self.new_index)
-
-    def undo(self) -> None:
-        self.scene.move_layer(self.layer_id, self.old_index)
+    def _set(self, index: int) -> None:
+        self.scene.move_layer(self.layer_id, index)
 
 
 def restack_command(scene: Scene, direction: int) -> MoveLayerCommand | None:
@@ -92,65 +127,44 @@ def restack_command(scene: Scene, direction: int) -> MoveLayerCommand | None:
     return MoveLayerCommand(scene, layer_id, j) if i != j else None
 
 
-class SetTransformsCommand(QUndoCommand):
+class SetTransformsCommand(ValueCommand):
     """Nowe transformacje dla wielu warstw naraz (przesuwanie, skalowanie, obrót)."""
+
+    MERGE_ID = MERGE_TRANSFORM
 
     def __init__(self, scene: Scene, new: dict[str, Transform], gesture: object = None,
                  text: str | None = None) -> None:
-        super().__init__(text or QCoreApplication.translate("Commands", "Transform"))
-        self.scene = scene
+        super().__init__(scene, text or QCoreApplication.translate("Commands", "Transform"), gesture)
         self.old = {i: scene.layer(i).transform.copy() for i in new if scene.layer(i)}
         self.new = {i: t.copy() for i, t in new.items() if i in self.old}
-        self.gesture = gesture  # identyfikator gestu; ten sam = łączenie w jeden krok
 
-    def id(self) -> int:
-        return MERGE_TRANSFORM
+    def merge_key(self):
+        return set(self.new)
 
-    def mergeWith(self, other: QUndoCommand) -> bool:
-        if (not isinstance(other, SetTransformsCommand) or self.gesture is None
-                or other.gesture != self.gesture or other.new.keys() != self.new.keys()):
-            return False
-        self.new = other.new
-        return True
-
-    def _apply(self, values: dict[str, Transform]) -> None:
+    def _set(self, values: dict[str, Transform]) -> None:
         for layer_id, t in values.items():
             layer = self.scene.layer(layer_id)
             if layer is not None:
                 layer.transform = t.copy()
         self.scene.notify_layer_changed()
 
-    def redo(self) -> None:
-        self._apply(self.new)
 
-    def undo(self) -> None:
-        self._apply(self.old)
-
-
-class SetParamCommand(QUndoCommand):
+class SetParamCommand(ValueCommand):
     """Zmiana jednego parametru warstwy z inspektora."""
 
+    MERGE_ID = MERGE_PARAM
+
     def __init__(self, scene: Scene, layer_id: str, key: str, value, gesture: object = None) -> None:
-        super().__init__(QCoreApplication.translate("Commands", "Change parameter"))
-        self.scene = scene
+        super().__init__(scene, QCoreApplication.translate("Commands", "Change parameter"), gesture)
         self.layer_id = layer_id
         self.key = key
         layer = scene.layer(layer_id)
         spec = layer.spec(key)
         self.old = copy.deepcopy(layer.params.get(key))
         self.new = coerce(spec, value) if spec else value
-        self.gesture = gesture  # ten sam gest (np. jedno przeciągnięcie suwaka) = jeden krok
 
-    def id(self) -> int:
-        return MERGE_PARAM
-
-    def mergeWith(self, other: QUndoCommand) -> bool:
-        if (isinstance(other, SetParamCommand) and self.gesture is not None
-                and other.gesture == self.gesture
-                and other.layer_id == self.layer_id and other.key == self.key):
-            self.new = other.new
-            return True
-        return False
+    def merge_key(self):
+        return (self.layer_id, self.key)
 
     def _set(self, value) -> None:
         layer = self.scene.layer(self.layer_id)
@@ -158,36 +172,22 @@ class SetParamCommand(QUndoCommand):
             layer.params[self.key] = copy.deepcopy(value)
             self.scene.notify_layer_changed(structural=self.key == "mode")
 
-    def redo(self) -> None:
-        self._set(self.new)
 
-    def undo(self) -> None:
-        self._set(self.old)
-
-
-class SetLayerPropCommand(QUndoCommand):
+class SetLayerPropCommand(ValueCommand):
     """Zmiana właściwości warstwy: name, opacity, blend_mode, visible, locked."""
 
+    MERGE_ID = MERGE_PROP
     STRUCTURAL = ("name", "visible", "locked")
 
     def __init__(self, scene: Scene, layer_ids: list[str], prop: str, value,
                  gesture: object = None) -> None:
-        super().__init__(QCoreApplication.translate("Commands", "Change layer"))
-        self.scene = scene
+        super().__init__(scene, QCoreApplication.translate("Commands", "Change layer"), gesture)
         self.prop = prop
         self.old = {i: getattr(scene.layer(i), prop) for i in layer_ids if scene.layer(i)}
-        self.value = value
-        self.gesture = gesture
+        self.new = {i: value for i in self.old}
 
-    def id(self) -> int:
-        return MERGE_PROP
-
-    def mergeWith(self, other: QUndoCommand) -> bool:
-        if (isinstance(other, SetLayerPropCommand) and self.gesture is not None
-                and other.gesture == self.gesture and other.prop == self.prop and other.old.keys() == self.old.keys()):
-            self.value = other.value
-            return True
-        return False
+    def merge_key(self):
+        return (self.prop, set(self.old))
 
     def _set(self, values: dict) -> None:
         for layer_id, v in values.items():
@@ -196,52 +196,34 @@ class SetLayerPropCommand(QUndoCommand):
                 setattr(layer, self.prop, v)
         self.scene.notify_layer_changed(structural=self.prop in self.STRUCTURAL)
 
-    def redo(self) -> None:
-        self._set({i: self.value for i in self.old})
 
-    def undo(self) -> None:
-        self._set(self.old)
-
-
-class SetSceneSettingCommand(QUndoCommand):
+class SetSceneSettingCommand(ValueCommand):
     """Zmiana ustawienia sceny: proporcje płótna lub kolor tła."""
 
     def __init__(self, scene: Scene, attr: str, value) -> None:
-        super().__init__(QCoreApplication.translate("Commands", "Change canvas"))
-        self.scene = scene
+        super().__init__(scene, QCoreApplication.translate("Commands", "Change canvas"))
         self.attr = attr
         self.old = getattr(scene, attr)
-        self.value = value
+        self.new = value
 
     def _set(self, value) -> None:
         setattr(self.scene, self.attr, value)
         self.scene.settings_changed.emit()
         self.scene.changed.emit()
 
-    def redo(self) -> None:
-        self._set(self.value)
 
-    def undo(self) -> None:
-        self._set(self.old)
-
-
-class ApplyPresetCommand(QUndoCommand):
+class ApplyPresetCommand(ValueCommand):
     """Nadpisanie parametrów warstwy presetem (transformacja zostaje)."""
 
     def __init__(self, scene: Scene, layer_id: str, params: dict) -> None:
-        super().__init__(QCoreApplication.translate("Commands", "Apply preset"))
-        self.scene = scene
+        super().__init__(scene, QCoreApplication.translate("Commands", "Apply preset"))
         self.layer_id = layer_id
         layer = scene.layer(layer_id)
         self.old = copy.deepcopy(layer.params)
-        self.new_params = params
+        preview = copy.deepcopy(layer)  # apply_params na kopii: rzutuje typy, pomija nieznane klucze
+        preview.apply_params(params)
+        self.new = preview.params
 
-    def redo(self) -> None:
-        layer = self.scene.layer(self.layer_id)
-        layer.apply_params(self.new_params)
-        self.scene.notify_layer_changed(structural=True)
-
-    def undo(self) -> None:
-        layer = self.scene.layer(self.layer_id)
-        layer.params = copy.deepcopy(self.old)
+    def _set(self, params: dict) -> None:
+        self.scene.layer(self.layer_id).params = copy.deepcopy(params)
         self.scene.notify_layer_changed(structural=True)
