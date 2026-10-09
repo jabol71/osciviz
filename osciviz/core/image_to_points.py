@@ -24,7 +24,6 @@ from functools import lru_cache
 
 import numpy as np
 
-METHODS = ("brightness", "edges", "alpha")
 MAX_SIDE = 1024
 
 

@@ -26,9 +26,11 @@ from osciviz.gui.theme import theme
 
 
 def tool_button(icon_name: str, tooltip: str = "", checkable: bool = False, size: int = 18,
-                parent: QWidget | None = None) -> QToolButton:
-    btn = QToolButton(parent)
-    btn.setIcon(icon(icon_name, theme.tokens["text"], theme.tokens["accent"]))
+                color: str = "text") -> QToolButton:
+    """Przycisk z ikoną; ``color`` to token motywu (zapamiętany dla ``refresh_icons``)."""
+    btn = QToolButton()
+    btn.setIcon(icon(icon_name, theme.tokens[color], theme.tokens["accent"]))
+    btn.setProperty("icon_color", color)
     btn.setIconSize(QSize(size, size))
     btn.setToolTip(tooltip)
     btn.setCheckable(checkable)

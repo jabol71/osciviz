@@ -169,7 +169,6 @@ class Timeline(QFrame):
         self.total_label = label("/ 00:00.00", "faint")
         self.overview = WaveOverview()
         self.overview.seekRequested.connect(self.seekRequested)
-        self.volume_icon = QWidget()
         self.vol_btn = tool_button("volume", "", size=16)
         self.volume = QSlider(Qt.Horizontal)
         self.volume.setRange(0, 100)
@@ -194,11 +193,11 @@ class Timeline(QFrame):
         self.vol_btn.setToolTip(self.tr("Volume"))
 
     def refresh_theme(self) -> None:
-        self.set_playing(self._playing)
+        self.set_playing(self.playing)
         self.overview.update()
 
     def set_playing(self, playing: bool) -> None:
-        self._playing = playing
+        self.playing = playing
         self.play_btn.setIcon(icon("pause" if playing else "play", theme.tokens["accent_text"]))
 
     def set_source(self, source) -> None:

@@ -54,6 +54,12 @@ def hex_to_rgba(color: str, alpha: float = 1.0) -> tuple[float, float, float, fl
     return (r, g, b, alpha)
 
 
+def gradient(params: dict) -> tuple[tuple, tuple]:
+    """Kolory początku i końca gradientu (bez gradientu oba są takie same)."""
+    end = params["color2"] if params["use_gradient"] else params["color"]
+    return hex_to_rgba(params["color"]), hex_to_rgba(end)
+
+
 def ortho_view(center: tuple[float, float], half_size: tuple[float, float]) -> np.ndarray:
     """Macierz widoku: prostokąt sceny ``center ± half_size`` → NDC ``[-1, 1]²``."""
     cx, cy = center
@@ -126,9 +132,7 @@ class Renderer:
             self.msaa_fbo.release()
             self.msaa_rb.release()
             self.msaa_fbo = self.msaa_rb = None
-        for buf in self.persistence.values():
-            buf.release()
-        self.persistence.clear()
+        self.reset_history()
 
     def reset_history(self) -> None:
         """Czyści powidoki (np. po zmianie kamery lub przewinięciu)."""
@@ -146,16 +150,13 @@ class Renderer:
                px_per_unit: float, clear_target: tuple | None = None) -> None:
         ctx = self.ctx
         self._ensure_size(size)
-        w, h = size
         view_bytes = mat3_bytes(view)
         self.mesh_prog["u_view"].write(view_bytes)
         self.points_prog["u_view"].write(view_bytes)
 
         # 1. Tło kadru.
         scene_tex, scene_fbo = self.scene_target
-        scene_fbo.use()
-        ctx.viewport = (0, 0, w, h)
-        scene_fbo.clear(0, 0, 0, 0)
+        self._use(scene_fbo, clear=(0, 0, 0, 0))
         ctx.disable(moderngl.BLEND)
         hx, hy = scene.extent
         self._draw_mesh(geometry.rect_mesh(hx, hy), hex_to_rgba(scene.background),
@@ -170,46 +171,55 @@ class Renderer:
             image = self._render_layer(layer, frame, sim, view, px_per_unit)
             if image is None:
                 continue
-            glow_tex, glow_strength = self.black, 0.0
+            glow_tex, glow_strength = None, 0.0
             glow = float(layer.params.get("glow", 0.0))
             if glow > 0.0:
                 radius_px = layer.params.get("glow_radius", 10.0) * geometry.PX * px_per_unit
                 glow_tex = self.glow.run(image, radius_px)
                 glow_strength = glow
-            scene_fbo.use()
-            ctx.viewport = (0, 0, w, h)
-            ctx.enable(moderngl.BLEND)
+            self._use(scene_fbo)
             ctx.blend_func = BLEND_ADD if layer.blend_mode == "additive" else BLEND_NORMAL
-            image.use(0)
-            glow_tex.use(1)
-            self.comp_prog["u_image"].value = 0
-            self.comp_prog["u_glow"].value = 1
-            self.comp_prog["u_opacity"].value = float(layer.opacity)
-            self.comp_prog["u_glow_strength"].value = glow_strength
-            self.quads[self.comp_prog].render(moderngl.TRIANGLE_STRIP)
+            self._composite(image, float(layer.opacity), glow_tex, glow_strength)
 
         for key in list(self.persistence):
             if key not in alive:
                 self.persistence.pop(key).release()
 
         # 3. Scena → cel.
-        target.use()
-        ctx.viewport = (0, 0, w, h)
-        if clear_target is not None:
-            target.clear(*clear_target)
-        ctx.enable(moderngl.BLEND)
+        self._use(target, clear=clear_target)
         ctx.blend_func = BLEND_NORMAL
         scene_tex.use(0)
         self.final_prog["u_image"].value = 0
         self.quads[self.final_prog].render(moderngl.TRIANGLE_STRIP)
         ctx.disable(moderngl.BLEND)
 
-    def _begin_layer(self) -> None:
-        fbo = self.msaa_fbo or self.layer_target[1]
+    def _use(self, fbo: moderngl.Framebuffer, clear: tuple | None = None) -> None:
+        """Ustawia framebuffer jako cel rysowania (opcjonalnie czyści) i włącza mieszanie."""
         fbo.use()
         self.ctx.viewport = (0, 0, *self.size)
-        fbo.clear(0, 0, 0, 0)
+        if clear is not None:
+            fbo.clear(*clear)
         self.ctx.enable(moderngl.BLEND)
+
+    def _composite(self, image: moderngl.Texture, opacity: float,
+                   glow_tex: moderngl.Texture | None = None, glow_strength: float = 0.0) -> None:
+        """Nakłada teksturę (i ewentualnie jej poświatę) na bieżący framebuffer."""
+        image.use(0)
+        (glow_tex or self.black).use(1)
+        self.comp_prog["u_image"].value = 0
+        self.comp_prog["u_glow"].value = 1
+        self.comp_prog["u_opacity"].value = opacity
+        self.comp_prog["u_glow_strength"].value = glow_strength
+        self.quads[self.comp_prog].render(moderngl.TRIANGLE_STRIP)
+
+    def _upload(self, vbo: moderngl.Buffer, data: bytes) -> None:
+        """Wgrywa dane do bufora, powiększając go w razie potrzeby."""
+        if len(data) > vbo.size:
+            vbo.orphan(len(data) * 2)
+        vbo.write(data)
+
+    def _begin_layer(self) -> None:
+        self._use(self.msaa_fbo or self.layer_target[1], clear=(0, 0, 0, 0))
 
     def _end_layer(self) -> moderngl.Texture:
         if self.msaa_fbo:
@@ -223,9 +233,8 @@ class Renderer:
         self._begin_layer()
         self.ctx.blend_func = BLEND_NORMAL
         if isinstance(layer, WaveformLayer):
-            c2 = p["color2"] if p["use_gradient"] else p["color"]
-            self._draw_mesh(geometry.waveform_mesh(layer, frame), hex_to_rgba(p["color"]),
-                            hex_to_rgba(c2), feather=self._feather(p["thickness"], px_per_unit))
+            self._draw_mesh(geometry.waveform_mesh(layer, frame), *gradient(p),
+                            feather=self._feather(p["thickness"], px_per_unit))
         elif isinstance(layer, XYLayer):
             self.ctx.blend_func = BLEND_ADD  # nakładające się przebiegi rozjaśniają się
             color = hex_to_rgba(p["color"])
@@ -235,9 +244,7 @@ class Renderer:
             values = sim.spectrum.get(layer.id)
             if values is None:
                 values = np.zeros(int(p["bands"]), np.float32)
-            c2 = p["color2"] if p["use_gradient"] else p["color"]
-            self._draw_mesh(geometry.spectrum_mesh(layer, values), hex_to_rgba(p["color"]),
-                            hex_to_rgba(c2), feather=0.0)
+            self._draw_mesh(geometry.spectrum_mesh(layer, values), *gradient(p), feather=0.0)
         elif isinstance(layer, ParticleLayer):
             if not self._draw_particles(layer, sim, px_per_unit):
                 return None
@@ -255,10 +262,7 @@ class Renderer:
     def _draw_mesh(self, vertices: np.ndarray, color1, color2, feather: float) -> None:
         if len(vertices) == 0:
             return
-        data = np.ascontiguousarray(vertices, dtype=np.float32).tobytes()
-        if len(data) > self.mesh_vbo.size:
-            self.mesh_vbo.orphan(len(data) * 2)
-        self.mesh_vbo.write(data)
+        self._upload(self.mesh_vbo, np.ascontiguousarray(vertices, dtype=np.float32).tobytes())
         self.mesh_prog["u_color1"].value = color1
         self.mesh_prog["u_color2"].value = color2
         self.mesh_prog["u_feather"].value = feather
@@ -273,10 +277,7 @@ class Renderer:
         data = np.empty((system.count, 6), dtype=np.float32)
         data[:, 0:2] = system.pos
         data[:, 2:6] = system.colors
-        raw = data.tobytes()
-        if len(raw) > self.pts_vbo.size:
-            self.pts_vbo.orphan(len(raw) * 2)
-        self.pts_vbo.write(raw)
+        self._upload(self.pts_vbo, data.tobytes())
         size = p["size"] * geometry.PX * px_per_unit
         if p["high_size"]:
             size *= 1.0 + 1.5 * state.high_value
@@ -303,24 +304,15 @@ class Renderer:
             self.persistence[layer_id] = buf
         # Zanikanie niezależne od liczby klatek na sekundę: decay = p^(dt·60).
         decay = float(persistence ** max(dt * 60.0, 0.0))
-        tex_back, fbo_back = buf.back
-        tex_front, _ = buf.front
-        fbo_back.use()
-        self.ctx.viewport = (0, 0, *self.size)
+        self._use(buf.back[1])
         self.ctx.disable(moderngl.BLEND)
-        tex_front.use(0)
+        buf.front[0].use(0)
         self.fade_prog["u_tex"].value = 0
         self.fade_prog["u_decay"].value = decay
         self.quads[self.fade_prog].render(moderngl.TRIANGLE_STRIP)
         # Bieżąca klatka dodana na wierzch wygaszonej historii.
         self.ctx.enable(moderngl.BLEND)
         self.ctx.blend_func = BLEND_NORMAL
-        image.use(0)
-        self.comp_prog["u_image"].value = 0
-        self.black.use(1)
-        self.comp_prog["u_glow"].value = 1
-        self.comp_prog["u_opacity"].value = 1.0
-        self.comp_prog["u_glow_strength"].value = 0.0
-        self.quads[self.comp_prog].render(moderngl.TRIANGLE_STRIP)
+        self._composite(image, 1.0)
         buf.swap()
         return buf.front[0]

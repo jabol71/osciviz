@@ -51,3 +51,18 @@ def test_reorder(qapp):
     assert [lay.name for lay in scene.layers] == ["b", "a"]
     stack.undo()
     assert [lay.name for lay in scene.layers] == ["a", "b"]
+
+
+def test_layer_prop_gesture_merges_and_preset_undo(qapp):
+    scene, stack = Scene(), QUndoStack()
+    layer = WaveformLayer()
+    scene.layers.append(layer)
+    for v in (0.8, 0.5, 0.3):
+        stack.push(cmd.SetLayerPropCommand(scene, [layer.id], "opacity", v, gesture="slider"))
+    assert stack.count() == 1 and layer.opacity == 0.3
+    stack.push(cmd.ApplyPresetCommand(scene, layer.id, {"thickness": 12, "unknown": 1}))
+    assert layer.params["thickness"] == 12.0 and "unknown" not in layer.params
+    stack.undo()
+    assert layer.params["thickness"] == 4.0
+    stack.undo()
+    assert layer.opacity == 1.0
