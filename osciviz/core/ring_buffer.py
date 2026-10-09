@@ -77,9 +77,3 @@ class RingBuffer:
                 )
             out[n - available:] = chunk
         return out
-
-    def clear(self) -> None:
-        with self._lock:
-            self._data[:] = 0
-            self._write_pos = 0
-            self._total_written = 0

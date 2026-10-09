@@ -82,6 +82,16 @@ class MoveLayerCommand(QUndoCommand):
         self.scene.move_layer(self.layer_id, self.old_index)
 
 
+def restack_command(scene: Scene, direction: int) -> MoveLayerCommand | None:
+    """Komenda przesunięcia jedynej zaznaczonej warstwy o ``direction`` (+1 w górę, −1 w dół)."""
+    if len(scene.selection) != 1:
+        return None
+    layer_id = scene.selection[0]
+    i = scene.index_of(layer_id)
+    j = max(0, min(len(scene.layers) - 1, i + direction))
+    return MoveLayerCommand(scene, layer_id, j) if i != j else None
+
+
 class SetTransformsCommand(QUndoCommand):
     """Nowe transformacje dla wielu warstw naraz (przesuwanie, skalowanie, obrót)."""
 

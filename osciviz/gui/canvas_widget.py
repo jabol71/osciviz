@@ -29,7 +29,7 @@ from PySide6.QtWidgets import QMenu
 from osciviz.core.frame import FrameContext, silent_frame
 from osciviz.gui.icons import icon
 from osciviz.gui.theme import theme
-from osciviz.render.renderer import Renderer
+from osciviz.render.renderer import Renderer, ortho_view
 from osciviz.scene import commands as cmd
 from osciviz.scene.transform import Transform, apply_point, corners, hit_test
 
@@ -52,6 +52,7 @@ class CanvasWidget(QOpenGLWidget):
     requestSavePreset = Signal()
     requestApplyPreset = Signal(str)  # nazwa presetu
     glError = Signal(str)
+    optionsChanged = Signal()  # siatka / przyciąganie / linijki / krok siatki
 
     def __init__(self, scene, undo_stack, simulation, parent=None) -> None:
         super().__init__(parent)
@@ -103,10 +104,16 @@ class CanvasWidget(QOpenGLWidget):
 
     def view_matrix(self) -> np.ndarray:
         """Scena → NDC. Połowa widoku w jednostkach sceny = (połowa piksela) / zoom."""
-        hx = self.width() / 2 / self.zoom
-        hy = self.height() / 2 / self.zoom
-        cx, cy = self.center
-        return np.array([[1 / hx, 0, -cx / hx], [0, 1 / hy, -cy / hy], [0, 0, 1]])
+        return ortho_view(self.center, (self.width() / 2 / self.zoom, self.height() / 2 / self.zoom))
+
+    def set_option(self, name: str, value) -> None:
+        """Zmienia opcję widoku (``show_grid``, ``snap``, ``show_rulers``, ``grid_step``)
+        i powiadamia menu oraz inspektor, żeby wszystkie przełączniki były zgodne."""
+        if getattr(self, name) == value:
+            return
+        setattr(self, name, value)
+        self.update()
+        self.optionsChanged.emit()
 
     def fit_view(self) -> None:
         hx, hy = self.scene.extent
@@ -616,19 +623,17 @@ class CanvasWidget(QOpenGLWidget):
         menu = QMenu(self)
         tok = theme.tokens["text"]
         has_sel = bool(self.scene.selection)
-        a = menu.addAction(icon("copy", tok), self.tr("Duplicate"), self.requestDuplicate.emit)
-        a.setEnabled(has_sel)
-        a = menu.addAction(icon("trash", tok), self.tr("Delete"), self.requestDelete.emit)
-        a.setEnabled(has_sel)
-        menu.addSeparator()
-        a = menu.addAction(icon("chevron-up", tok), self.tr("Bring forward"), lambda: self._restack(1))
-        a.setEnabled(has_sel)
-        a = menu.addAction(icon("chevron-down", tok), self.tr("Send backward"), lambda: self._restack(-1))
-        a.setEnabled(has_sel)
-        a = menu.addAction(icon("reset", tok), self.tr("Reset transform"), self.reset_transform)
-        a.setEnabled(has_sel)
-        menu.addSeparator()
         sel = self.scene.selected_layers()
+        entries = [("copy", self.tr("Duplicate"), self.requestDuplicate.emit),
+                   ("trash", self.tr("Delete"), self.requestDelete.emit), None,
+                   ("chevron-up", self.tr("Bring forward"), lambda: self.restack(1)),
+                   ("chevron-down", self.tr("Send backward"), lambda: self.restack(-1)),
+                   ("reset", self.tr("Reset transform"), self.reset_transform), None]
+        for entry in entries:
+            if entry is None:
+                menu.addSeparator()
+            else:
+                menu.addAction(icon(entry[0], tok), entry[1], entry[2]).setEnabled(has_sel)
         presets = menu.addMenu(icon("preset", tok), self.tr("Apply preset"))
         presets.setEnabled(len(sel) == 1)
         if len(sel) == 1:
@@ -658,21 +663,16 @@ class CanvasWidget(QOpenGLWidget):
             step = 0.1 if shift else 0.01
             dx = {Qt.Key_Left: -step, Qt.Key_Right: step}.get(key, 0.0)
             dy = {Qt.Key_Down: -step, Qt.Key_Up: step}.get(key, 0.0)
-            self._apply_to_selection(lambda t: setattr(t, "x", t.x + dx) or setattr(t, "y", t.y + dy),
-                                     self.tr("Move"))
+            self.nudge(self.tr("Move"), dx=dx, dy=dy)
             return
         if key == Qt.Key_R:
-            delta = -5.0 if shift else 5.0
-            self._apply_to_selection(lambda t: setattr(t, "rotation", t.rotation + delta), self.tr("Rotate"))
+            self.nudge(self.tr("Rotate"), rotation=-5.0 if shift else 5.0)
             return
         if key in (Qt.Key_Plus, Qt.Key_Equal, Qt.Key_Minus):
-            f = 1 / 1.05 if key == Qt.Key_Minus else 1.05
-            self._apply_to_selection(lambda t: setattr(t, "sx", t.sx * f) or setattr(t, "sy", t.sy * f),
-                                     self.tr("Scale"))
+            self.nudge(self.tr("Scale"), factor=1 / 1.05 if key == Qt.Key_Minus else 1.05)
             return
         if key == Qt.Key_G and not mods:
-            self.show_grid = not self.show_grid
-            self.update()
+            self.set_option("show_grid", not self.show_grid)
             return
         super().keyPressEvent(event)
 
@@ -685,14 +685,14 @@ class CanvasWidget(QOpenGLWidget):
             return
         super().keyReleaseEvent(event)
 
-    def _apply_to_selection(self, fn, text: str) -> None:
+    def nudge(self, text: str, dx: float = 0.0, dy: float = 0.0, rotation: float = 0.0,
+              factor: float = 1.0) -> None:
+        """Krok z klawiatury dla wszystkich odblokowanych zaznaczonych warstw."""
         new = {}
         for layer in self.scene.selected_layers():
-            if layer.locked:
-                continue
-            t = layer.transform.copy()
-            fn(t)
-            new[layer.id] = t
+            if not layer.locked:
+                t = layer.transform
+                new[layer.id] = Transform(t.x + dx, t.y + dy, t.sx * factor, t.sy * factor, t.rotation + rotation)
         if new:
             self.undo.push(cmd.SetTransformsCommand(self.scene, new, None, text))
 
@@ -701,14 +701,10 @@ class CanvasWidget(QOpenGLWidget):
         if new:
             self.undo.push(cmd.SetTransformsCommand(self.scene, new, None, self.tr("Reset transform")))
 
-    def _restack(self, direction: int) -> None:
-        sel = self.scene.selected_layers()
-        if len(sel) != 1:
-            return
-        i = self.scene.index_of(sel[0].id)
-        j = max(0, min(len(self.scene.layers) - 1, i + direction))
-        if i != j:
-            self.undo.push(cmd.MoveLayerCommand(self.scene, sel[0].id, j))
+    def restack(self, direction: int) -> None:
+        command = cmd.restack_command(self.scene, direction)
+        if command is not None:
+            self.undo.push(command)
 
     def _select_next(self, direction: int) -> None:
         layers = list(reversed(self.scene.layers))  # kolejność jak w panelu (od góry)

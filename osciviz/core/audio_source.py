@@ -37,20 +37,12 @@ class AudioSource:
     """Interfejs źródła audio."""
 
     sample_rate: int = 48000
-    is_live: bool = False
 
     def get_window(self, n_samples: int) -> np.ndarray:  # pragma: no cover - interfejs
         raise NotImplementedError
 
     def close(self) -> None:
         """Zwalnia zasoby (strumienie audio)."""
-
-
-class SilentSource(AudioSource):
-    """Źródło zastępcze, gdy nic nie wczytano — zwraca ciszę."""
-
-    def get_window(self, n_samples: int) -> np.ndarray:
-        return np.zeros((n_samples, 2), dtype=np.float32)
 
 
 class FileSource(AudioSource):
@@ -99,15 +91,30 @@ class FileSource(AudioSource):
         return np.stack((blocks.min(axis=1), blocks.max(axis=1)), axis=1)
 
 
-class LiveSource(AudioSource):
-    """Przechwytywanie na żywo przez ``sounddevice.InputStream`` (np. BlackHole 2ch).
+class BufferedSource(AudioSource):
+    """Wspólna część źródeł na żywo (``LiveSource``, ``LoopbackSource``).
 
-    Callback strumienia robi tylko jedno: kopiuje blok do bufora kołowego
-    (i opcjonalnie podaje go nagrywarce przez kolejkę). Żadnej analizy,
+    Callback strumienia robi tylko jedno: ``_push`` kopiuje blok do bufora
+    kołowego (i opcjonalnie podaje go nagrywarce przez kolejkę). Żadnej analizy,
     alokacji ani logowania — to wymóg pracy w wątku czasu rzeczywistego.
     """
 
-    is_live = True
+    def _init_buffer(self, buffer_seconds: float) -> None:
+        self.buffer = RingBuffer(int(self.sample_rate * buffer_seconds), channels=2)
+        self.recorder = None  # ustawiane z zewnątrz (core.recorder.Recorder)
+
+    def _push(self, block: np.ndarray) -> None:  # wątek audio
+        self.buffer.write(block)
+        recorder = self.recorder
+        if recorder is not None:
+            recorder.push(block)
+
+    def get_window(self, n_samples: int) -> np.ndarray:
+        return self.buffer.latest(n_samples)
+
+
+class LiveSource(BufferedSource):
+    """Przechwytywanie na żywo przez ``sounddevice.InputStream`` (np. BlackHole 2ch)."""
 
     def __init__(self, device=None, sample_rate: int | None = None,
                  blocksize: int = 512, buffer_seconds: float = 2.0) -> None:
@@ -122,8 +129,7 @@ class LiveSource(AudioSource):
         # Mikrofon bywa mono. Blok (n, 1) zapisany do bufora (n, 2) numpy sam
         # „rozciąga” na oba kanały (broadcasting), więc callback nadal nic nie alokuje.
         channels = 2 if int(info.get("max_input_channels", 2)) >= 2 else 1
-        self.buffer = RingBuffer(int(self.sample_rate * buffer_seconds), channels=2)
-        self.recorder = None  # ustawiane z zewnątrz (core.recorder.Recorder)
+        self._init_buffer(buffer_seconds)
         self._stream = sd.InputStream(
             device=device, channels=channels, samplerate=self.sample_rate,
             blocksize=blocksize, dtype="float32", callback=self._callback,
@@ -131,13 +137,7 @@ class LiveSource(AudioSource):
         self._stream.start()
 
     def _callback(self, indata, frames, time_info, status) -> None:  # wątek audio
-        self.buffer.write(indata)
-        recorder = self.recorder
-        if recorder is not None:
-            recorder.push(indata)
-
-    def get_window(self, n_samples: int) -> np.ndarray:
-        return self.buffer.latest(n_samples)
+        self._push(indata)
 
     def close(self) -> None:
         if self._stream is not None:

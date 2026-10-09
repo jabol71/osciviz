@@ -46,7 +46,6 @@ def tp(text: str) -> str:
 class Inspector(QFrame):
     requestApplyPreset = Signal(str)
     requestSavePreset = Signal()
-    canvasOptionsChanged = Signal()
 
     def __init__(self, scene, undo_stack, presets, canvas, parent=None) -> None:
         super().__init__(parent)
@@ -72,6 +71,7 @@ class Inspector(QFrame):
         scene.layers_changed.connect(self._on_structure)
         scene.changed.connect(self.refresh)
         scene.settings_changed.connect(self.refresh)
+        canvas.optionsChanged.connect(self.refresh)
         self.rebuild()
 
     # --- pomocnicze -------------------------------------------------------------
@@ -174,20 +174,14 @@ class Inspector(QFrame):
         layout.addWidget(sec)
 
         sec = Section(self.tr("Grid & guides"))
-        grid_toggle = Toggle()
-        grid_toggle.toggled.connect(self._grid_toggled)
-        self._setters.append(lambda: grid_toggle.setChecked(self.canvas.show_grid))
-        sec.add_row(self.tr("Show grid (G)"), _left(grid_toggle))
-        snap_toggle = Toggle()
-        snap_toggle.toggled.connect(self._snap_toggled)
-        self._setters.append(lambda: snap_toggle.setChecked(self.canvas.snap))
-        sec.add_row(self.tr("Snap to grid"), _left(snap_toggle))
-        rulers = Toggle()
-        rulers.toggled.connect(self._rulers_toggled)
-        self._setters.append(lambda: rulers.setChecked(self.canvas.show_rulers))
-        sec.add_row(self.tr("Rulers"), _left(rulers))
+        for option, title in (("show_grid", self.tr("Show grid (G)")), ("snap", self.tr("Snap to grid")),
+                              ("show_rulers", self.tr("Rulers"))):
+            toggle = Toggle()
+            toggle.toggled.connect(lambda on, o=option: self.canvas.set_option(o, on))
+            self._setters.append(lambda t=toggle, o=option: t.setChecked(getattr(self.canvas, o)))
+            sec.add_row(title, _left(toggle))
         step = SliderSpin(0.05, 1.0, 0.05, 2)
-        step.valueChanged.connect(self._grid_step)
+        step.valueChanged.connect(lambda v: self.canvas.set_option("grid_step", max(0.01, v)))
         self._setters.append(lambda: step.setValue(self.canvas.grid_step))
         sec.add_row(self.tr("Grid step"), step)
         layout.addWidget(sec)
@@ -208,27 +202,6 @@ class Inspector(QFrame):
         tip.setWordWrap(True)
         layout.addSpacing(8)
         layout.addWidget(tip)
-
-    def _grid_toggled(self, on: bool) -> None:
-        if not self._updating:
-            self.canvas.show_grid = on
-            self.canvas.update()
-            self.canvasOptionsChanged.emit()
-
-    def _snap_toggled(self, on: bool) -> None:
-        if not self._updating:
-            self.canvas.snap = on
-            self.canvasOptionsChanged.emit()
-
-    def _rulers_toggled(self, on: bool) -> None:
-        if not self._updating:
-            self.canvas.show_rulers = on
-            self.canvas.update()
-
-    def _grid_step(self, v: float) -> None:
-        if not self._updating:
-            self.canvas.grid_step = max(0.01, v)
-            self.canvas.update()
 
     def _set_scene(self, attr: str, value) -> None:
         if self._updating or getattr(self.scene, attr) == value:

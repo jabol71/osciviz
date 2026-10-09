@@ -15,6 +15,13 @@ from dataclasses import dataclass, field
 
 from PySide6.QtCore import QT_TRANSLATE_NOOP
 
+GROUP_LOOK = QT_TRANSLATE_NOOP("Params", "Appearance")
+GROUP_SIGNAL = QT_TRANSLATE_NOOP("Params", "Signal")
+GROUP_GLOW = QT_TRANSLATE_NOOP("Params", "Glow")
+GROUP_PHYSICS = QT_TRANSLATE_NOOP("Params", "Physics")
+GROUP_SOURCE = QT_TRANSLATE_NOOP("Params", "Source image")
+GROUP_REACT = QT_TRANSLATE_NOOP("Params", "Reaction")
+
 
 @dataclass(frozen=True)
 class ParamSpec:
@@ -26,13 +33,6 @@ class ParamSpec:
     maximum: float = 1.0
     step: float = 0.01
     options: tuple = field(default_factory=tuple)  # dla "enum": krotki (wartość, etykieta)
-    group: str = QT_TRANSLATE_NOOP("Params", "Appearance")
+    group: str = GROUP_LOOK
     suffix: str = ""
 
-
-GROUP_LOOK = QT_TRANSLATE_NOOP("Params", "Appearance")
-GROUP_SIGNAL = QT_TRANSLATE_NOOP("Params", "Signal")
-GROUP_GLOW = QT_TRANSLATE_NOOP("Params", "Glow")
-GROUP_PHYSICS = QT_TRANSLATE_NOOP("Params", "Physics")
-GROUP_SOURCE = QT_TRANSLATE_NOOP("Params", "Source image")
-GROUP_REACT = QT_TRANSLATE_NOOP("Params", "Reaction")

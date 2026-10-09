@@ -18,10 +18,6 @@ def _env(n: int, attack: float, decay: float, sr: int = SR) -> np.ndarray:
     return np.minimum(1.0, t / max(attack, 1e-4)) * np.exp(-t / decay)
 
 
-def _note(freq: float) -> float:
-    return freq
-
-
 def make_demo_track(seconds: float = 16.0, sr: int = SR) -> np.ndarray:
     n = int(seconds * sr)
     out = np.zeros((n, 2), dtype=np.float64)

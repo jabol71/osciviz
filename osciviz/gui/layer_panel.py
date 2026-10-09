@@ -58,16 +58,12 @@ class LayerRow(QWidget):
         self.stack.addWidget(self.name_edit)
         self.stack.setFixedHeight(26)
         layout.addWidget(self.stack, 1)
-        self.lock_btn = tool_button("lock" if layer.locked else "unlock", QCoreApplication.translate("LayerPanel", "Lock"), size=15)
-        self.lock_btn.setProperty("icon_color", "text" if layer.locked else "faint")
-        self.lock_btn.setIcon(icon("lock" if layer.locked else "unlock",
-                                   theme.tokens["text" if layer.locked else "faint"]))
-        self.lock_btn.clicked.connect(lambda: panel.toggle_prop(self.layer_id, "locked"))
-        self.eye_btn = tool_button("eye" if layer.visible else "eye-off", QCoreApplication.translate("LayerPanel", "Show / hide"), size=15)
-        self.eye_btn.setIcon(icon("eye" if layer.visible else "eye-off",
-                                  theme.tokens["text" if layer.visible else "faint"]))
-        self.eye_btn.clicked.connect(lambda: panel.toggle_prop(self.layer_id, "visible"))
-        for b in (self.lock_btn, self.eye_btn):
+        buttons = (("locked", "lock", "unlock", QCoreApplication.translate("LayerPanel", "Lock")),
+                   ("visible", "eye", "eye-off", QCoreApplication.translate("LayerPanel", "Show / hide")))
+        for prop, icon_on, icon_off, tip in buttons:
+            on = getattr(layer, prop)
+            b = tool_button(icon_on if on else icon_off, tip, size=15, color="text" if on else "faint")
+            b.clicked.connect(lambda _=False, p=prop: panel.toggle_prop(self.layer_id, p))
             b.setFixedSize(26, 26)
             layout.addWidget(b)
 
@@ -216,13 +212,9 @@ class LayerPanel(QFrame):
             self.rebuild()
 
     def _restack(self, direction: int) -> None:
-        sel = self.scene.selection
-        if len(sel) != 1:
-            return
-        i = self.scene.index_of(sel[0])
-        j = max(0, min(len(self.scene.layers) - 1, i + direction))
-        if i != j:
-            self.undo.push(cmd.MoveLayerCommand(self.scene, sel[0], j))
+        command = cmd.restack_command(self.scene, direction)
+        if command is not None:
+            self.undo.push(command)
 
     def toggle_prop(self, layer_id: str, prop: str) -> None:
         layer = self.scene.layer(layer_id)

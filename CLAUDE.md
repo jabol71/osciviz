@@ -55,7 +55,7 @@ Każda warstwa ma: `transform` (pozycja, skala X/Y, rotacja), `opacity`, `blend_
 | GUI | PySide6: okno główne, panel warstw, inspektor właściwości, oś czasu, pasek narzędzi |
 | Układ współrzędnych 2D | Płótno ze współrzędnymi znormalizowanymi, siatka, linijki, przyciąganie do siatki |
 | Interakcja | Zaznaczanie (także wielu elementów), przeciąganie, uchwyty skalowania i rotacji, undo/redo |
-| Motywy | `dark.qss`, `light.qss`, `high_contrast.qss`, wybór zapamiętany w `QSettings` |
+| Motywy | ciemny, jasny, wysoki kontrast: jeden szablon `base.qss.template` + kolory z `theme.py`, wybór zapamiętany w `QSettings` |
 | Język | PL/EN przez Qt Linguist (`.ts` → `.qm`), przełączanie bez restartu |
 | Mysz + klawiatura | Skróty z sekcji 7 |
 | Zapis/odczyt | Plik projektu `.osv` |
@@ -145,7 +145,7 @@ osciviz/
 │   ├── source_panel.py       # wybór źródła: plik / na żywo, urządzenie, REC
 │   ├── export_dialog.py
 │   ├── settings_dialog.py    # motyw, język
-│   └── themes/               # dark.qss, light.qss, high_contrast.qss
+│   └── themes/               # base.qss.template (kolory motywów w theme.py)
 ├── io/
 │   ├── project_io.py         # zapis/odczyt .osv
 │   ├── presets.py            # import/eksport presetów warstw
